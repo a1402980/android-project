@@ -3,14 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-project.iml" filepath="$PROJECT_DIR$/android-project.iml" />
-<<<<<<< HEAD
-      <module fileurl="file://C:\Users\Mikko\Documents\GIT\android-project\android-project.iml" filepath="C:\Users\Mikko\Documents\GIT\android-project\android-project.iml" />
-      <module fileurl="file://C:\Users\Mikko\Documents\GIT\android-project\app\app.iml" filepath="C:\Users\Mikko\Documents\GIT\android-project\app\app.iml" />
-=======
-      <module fileurl="file://$PROJECT_DIR$/app/android-project-app.iml" filepath="$PROJECT_DIR$/app/android-project-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/androidProject-android-project.iml" filepath="$PROJECT_DIR$/androidProject-android-project.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
->>>>>>> 4d70a5973a96f5d1695596a93d2bec896a627777
     </modules>
   </component>
 </project>
