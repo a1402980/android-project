@@ -37,7 +37,7 @@ public class SanTour extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        
+
         //create a marker for sydney with the cordinates
         LatLng sydney = new LatLng(-34, 151);
 
