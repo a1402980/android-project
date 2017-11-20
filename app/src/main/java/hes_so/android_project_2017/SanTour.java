@@ -38,9 +38,13 @@ public class SanTour extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        //create a marker for sydney with the cordinates
         LatLng sydney = new LatLng(-34, 151);
+
+        //create a marker for the sydney cordinates
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+
+        // move camera to center at the sydney pointer
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
