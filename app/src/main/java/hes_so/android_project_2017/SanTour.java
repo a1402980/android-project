@@ -4,8 +4,6 @@ import android.location.Criteria;
 import android.provider.Settings;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
->>>>>>> 221c93a4b34621ae88aaecce4e20aadb662f8c77
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.app.Activity;
 
@@ -38,7 +36,7 @@ public class SanTour extends Activity implements LocationListener {
 
     private GoogleMap mMap;
 
-    LocationManager locationManager;
+    //LocationManager locationManager;
 
     private TextView latituteField;
     private TextView longitudeField;
@@ -284,8 +282,6 @@ public class SanTour extends Activity implements LocationListener {
 //        @Override
 //        public void onStatusChanged(String provider, int status, Bundle extras) {}
 //    }
-=======
-    */
->>>>>>> 221c93a4b34621ae88aaecce4e20aadb662f8c77
+
 
 }
