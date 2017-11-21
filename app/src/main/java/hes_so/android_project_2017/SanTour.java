@@ -1,9 +1,7 @@
 package hes_so.android_project_2017;
 
-<<<<<<< HEAD
 import android.location.Criteria;
 import android.provider.Settings;
-=======
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 >>>>>>> 221c93a4b34621ae88aaecce4e20aadb662f8c77
@@ -11,12 +9,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.app.Activity;
 
-<<<<<<< HEAD
 import android.location.LocationManager;
 import android.content.Context;
 import android.location.Criteria;
 import android.content.Intent;
-=======
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
@@ -26,8 +22,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
->>>>>>> 221c93a4b34621ae88aaecce4e20aadb662f8c77
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,10 +38,7 @@ public class SanTour extends Activity implements LocationListener {
 
     private GoogleMap mMap;
 
-<<<<<<< HEAD
     LocationManager locationManager;
-
-=======
 
     private TextView latituteField;
     private TextView longitudeField;
@@ -55,7 +46,6 @@ public class SanTour extends Activity implements LocationListener {
     private String provider;
 
     /** Called when the activity is first created. */
->>>>>>> 221c93a4b34621ae88aaecce4e20aadb662f8c77
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
