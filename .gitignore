@@ -34,3 +34,4 @@ output.json #Since Android Studio 3.0
 #NDK
 obj/
 .externalNativeBuild
+app/src/main/java/hes_so/android_project_2017/Track.java

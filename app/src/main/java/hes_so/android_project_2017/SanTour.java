@@ -1,50 +1,132 @@
 package hes_so.android_project_2017;
 
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.Manifest;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class SanTour extends FragmentActivity implements OnMapReadyCallback {
+public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
-    private GoogleMap mMap;
+        private GoogleMap mMap;
+        private TextView latitudeField;
+        private TextView longitudeField;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_san_tour);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+
+        latitudeField = (TextView) findViewById(R.id.TextView02);
+        longitudeField = (TextView) findViewById(R.id.TextView04);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
+        public void buttonOnClick(View v){
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        //create a marker for sydney with the cordinates
-        LatLng sydney = new LatLng(-34, 151);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
 
-        //create a marker for the sydney cordinates
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                LatLng coordinate = new LatLng(21.000000, -101.400000);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
+                mMap.animateCamera(yourLocation);
 
-        // move camera to center at the sydney pointer
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            } else {
+                Toast.makeText(this, "Error getting location!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+        @Override
+        public void onMapReady(GoogleMap map) {
+        mMap = map;
+
+        //this checks the permission to use GPS
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            //if allowed to use GPS -> set it on
+            mMap.setMyLocationEnabled(true);
+            mMap.setOnMyLocationButtonClickListener(this);
+            mMap.setOnMyLocationClickListener(this);
+
+        } else {
+            // otherwise ask for the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
+        }
+
+        }
+
+
+
+        @Override
+        public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        int lat = (int) (location.getLatitude());
+        int lng = (int) (location.getLongitude());
+        latitudeField.setText(String.valueOf(lat));
+        longitudeField.setText(String.valueOf(lng));
     }
-}
+
+        @Override
+        public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        mMap.setMyLocationEnabled(true);
+                        mMap.setOnMyLocationButtonClickListener(this);
+                        mMap.setOnMyLocationClickListener(this);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
+
+    }
+
