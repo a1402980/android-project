@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
@@ -35,6 +36,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView latitudeField;
     private TextView longitudeField;
     private List<LatLng> trackingPoints;
+    private boolean tracking;
 
     // some transient state for the activity instance
     private String mGameState;
@@ -97,6 +99,18 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public void buttonOnClick(View v) {
+        if (tracking != true){
+            tracking = true;
+            Button button = (Button) v;
+            ((Button) v).setText("Stop");
+            ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
+        }else{
+            tracking = false;
+            Button button = (Button) v;
+            ((Button) v).setText("Start");
+            ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
+        }
+
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -217,21 +231,21 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     // onSaveInstanceState(). We restore some state in onCreate() while we can optionally restore
     // other state here, possibly usable after onStart() has completed.
     // The savedInstanceState Bundle is same as the one used in onCreate().
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        trackingPoints = savedInstanceState.getParcelableArrayList("asd");
-    }
+    //@Override
+    //public void onRestoreInstanceState(Bundle savedInstanceState) {
+        //trackingPoints = savedInstanceState.getParcelableArrayList("asd");
+    //}
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("asd",trackingPoints);
+    //@Override
+    //public void onSaveInstanceState(Bundle outState) {
+        //outState.putParcelableArrayList("asd",//trackingPoints);
         //outState.putString(GAME_STATE_KEY, mGameState);
         //outState.putString(TEXT_VIEW_KEY, mTextView.getText());
 
         // call superclass to save any view hierarchy
-        super.onSaveInstanceState(outState);
-    }
+       // super.onSaveInstanceState(outState);
+    //}
 
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
