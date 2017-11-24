@@ -23,10 +23,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -35,6 +39,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView latitudeField;
     private TextView longitudeField;
     private List<LatLng> trackingPoints;
+    private FirebaseDatabase database;
+    private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
 
     @Override
     protected void onStart() {
@@ -48,6 +54,25 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
         setContentView(R.layout.activity_san_tour);
+
+        database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true);
+
+        trackRef = database.getReference("tracks");
+        poiRef = database.getReference("POI");
+        podRef = database.getReference("POD");
+        gpsdataRef = database.getReference("gpsData");
+        podcategRef = database.getReference("PODcategories");
+
+        //To add a new track
+//        Track track1 = new Track("Track 1", "This is a first track");
+//
+//        String key = trackRef.push().getKey();
+//
+//        Map<String, Object> newTracks = new HashMap<>();
+//        newTracks.put( key, track1 );
+//        trackRef.updateChildren(newTracks);
+
 
         latitudeField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
