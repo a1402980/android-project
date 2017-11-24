@@ -141,9 +141,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
 
-            LatLng coordinate = new LatLng(21.000000, -101.400000);
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
-            mMap.animateCamera(yourLocation);
+            //LatLng coordinate = new LatLng(21.000000, -101.400000);
+            //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
+            //mMap.animateCamera(yourLocation);
 
         } else {
             Toast.makeText(this, "Error getting location!", Toast.LENGTH_LONG).show();
@@ -250,7 +250,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             distance = 3;
         }
         Log.d("Update", loc + " // Distance : "+distance);
-        if (distance<5) {
+        if (distance<10) {
 
             longitudeField.setText(loc.getLongitude() + "");
             latitudeField.setText(loc.getLatitude() + "");
@@ -290,20 +290,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
 
-    // This callback is called only when there is a saved instance previously saved using
-    // onSaveInstanceState(). We restore some state in onCreate() while we can optionally restore
-    // other state here, possibly usable after onStart() has completed.
-    // The savedInstanceState Bundle is same as the one used in onCreate().
-
-    //@Override
-    //public void onRestoreInstanceState(Bundle savedInstanceState) {
-        //trackingPoints = savedInstanceState.getParcelableArrayList("asd");
-    //}
-
-    // invoked when the activity may be temporarily destroyed, save the instance state here
-    //@Override
-    //public void onSaveInstanceState(Bundle outState) {
-        //outState.putParcelableArrayList("asd",//trackingPoints);
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -343,12 +329,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         outState.putDoubleArray("ARRAY_LATITUDE",listLatitute);
         outState.putDoubleArray("ARRAY_LONGITUDE",listLongitude);
 
-
-        //outState.putString(GAME_STATE_KEY, mGameState);
-        //outState.putString(TEXT_VIEW_KEY, mTextView.getText());
-
-        // call superclass to save any view hierarchy
-       // super.onSaveInstanceState(outState);
     }
 
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -366,19 +346,20 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.e(TAG, "onLocationChanged: " + location);
-            mLastLocation.set(location);
-            LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
-            try {
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
-                mMap.animateCamera(yourLocation);
-            }catch (Exception e)
-            {
+            //activate when Start is pushed
+            if (tracking == true) {
+                Log.e(TAG, "onLocationChanged: " + location);
+                mLastLocation.set(location);
+                LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
+                try {
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+                    mMap.animateCamera(yourLocation);
+                } catch (Exception e) {
 
+                }
+
+                updateView(location);
             }
-
-            updateView(location);
-
 
         }
 
