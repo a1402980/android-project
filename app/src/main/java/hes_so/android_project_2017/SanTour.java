@@ -2,6 +2,7 @@ package hes_so.android_project_2017;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,8 +21,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -29,6 +34,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private GoogleMap mMap;
     private TextView latitudeField;
     private TextView longitudeField;
+    private List<LatLng> trackingPoints;
 
     @Override
     protected void onStart() {
@@ -178,6 +184,22 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         Log.d("Update", loc + "");
         longitudeField.setText(loc.getLongitude() + "");
         latitudeField.setText(loc.getLatitude() + "");
+
+        //turning location into LatLng
+        LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
+        if (trackingPoints == null){
+            trackingPoints = new ArrayList<>();
+        }
+        trackingPoints.add(coordinates);
+
+        Polyline route = mMap.addPolyline(new PolylineOptions()
+                .width(12)
+                .color(Color.BLUE)
+                .geodesic(true)
+                .zIndex(1));
+
+
+        route.setPoints(trackingPoints);
     }
 
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -198,6 +220,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
             updateView(location);
+
         }
 
         @Override
