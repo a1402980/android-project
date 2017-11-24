@@ -1,17 +1,15 @@
 package hes_so.android_project_2017;
 
-
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,21 +20,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import android.content.ComponentName;
 
-import android.content.ServiceConnection;
-
-import android.os.IBinder;
+import java.io.Serializable;
 
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
-        private GoogleMap mMap;
-        private TextView latitudeField;
-        private TextView longitudeField;
-        MyService service;
-        boolean myServiceBound = false;
-
+    private GoogleMap mMap;
+    private TextView latitudeField;
+    private TextView longitudeField;
 
     @Override
     protected void onStart() {
@@ -45,54 +37,69 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
 
-            setContentView(R.layout.activity_san_tour);
+        setContentView(R.layout.activity_san_tour);
 
-            latitudeField = (TextView) findViewById(R.id.TextView02);
-            longitudeField = (TextView) findViewById(R.id.TextView04);
-            MyService ser = MyService.getInstance();
-            MyService.getInstance().registerReceiver(
-                    new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            double latitude = intent.getDoubleExtra(MyService.EXTRA_LATITUDE, 0);
-                            double longitude = intent.getDoubleExtra(MyService.EXTRA_LONGITUDE, 0);
-                            latitudeField.setText(latitude+"");
-                            longitudeField.setText(longitude+"");
+        latitudeField = (TextView) findViewById(R.id.TextView02);
+        longitudeField = (TextView) findViewById(R.id.TextView04);
+        startLocationListener();
 
-                        }
-                    }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
-            );
+    }
 
-            SupportMapFragment mapFragment =
-                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
+
+    private void startLocationListener() {
+        Log.e(TAG, "onCreate");
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[1]);
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
         }
-
-        public void buttonOnClick(View v){
-
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
-
-                LatLng coordinate = new LatLng(21.000000, -101.400000);
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
-                mMap.animateCamera(yourLocation);
-
-            } else {
-                Toast.makeText(this, "Error getting location!", Toast.LENGTH_LONG).show();
-            }
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[0]);
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
 
-        public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-        @Override
-        public void onMapReady(GoogleMap map) {
+    public void buttonOnClick(View v) {
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
+
+            LatLng coordinate = new LatLng(21.000000, -101.400000);
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
+            mMap.animateCamera(yourLocation);
+
+        } else {
+            Toast.makeText(this, "Error getting location!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+
         mMap = map;
 
         //this checks the permission to use GPS
@@ -109,12 +116,11 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     MY_PERMISSIONS_REQUEST_LOCATION);
         }
 
-        }
+    }
 
 
-
-        @Override
-        public void onMyLocationClick(@NonNull Location location) {
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
         int lat = (int) (location.getLatitude());
         int lng = (int) (location.getLongitude());
@@ -122,15 +128,18 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         longitudeField.setText(String.valueOf(lng));
     }
 
-        @Override
-        public boolean onMyLocationButtonClick() {
+    @Override
+    public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -165,6 +174,46 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
 
-
+    public void updateView(Location loc) {
+        Log.d("Update", loc + "");
+        longitudeField.setText(loc.getLongitude() + "");
+        latitudeField.setText(loc.getLatitude() + "");
     }
+
+    private static final String TAG = "BOOMBOOMTESTGPS";
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final float LOCATION_DISTANCE = 0;
+
+    private class LocationListener implements android.location.LocationListener, Serializable {
+        Location mLastLocation;
+
+        public LocationListener(String provider) {
+            Log.e(TAG, "LocationListener " + provider);
+            mLastLocation = new Location(provider);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.e(TAG, "onLocationChanged: " + location);
+            mLastLocation.set(location);
+            updateView(location);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled: " + provider);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.e(TAG, "onStatusChanged: " + provider);
+        }
+    }
+}
 
