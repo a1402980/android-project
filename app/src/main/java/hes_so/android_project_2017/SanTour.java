@@ -1,6 +1,10 @@
 package hes_so.android_project_2017;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,26 +22,58 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import android.content.ComponentName;
+
+import android.content.ServiceConnection;
+
+import android.os.IBinder;
+
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
         private GoogleMap mMap;
         private TextView latitudeField;
         private TextView longitudeField;
+        MyService service;
+        boolean myServiceBound = false;
 
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_san_tour);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        latitudeField = (TextView) findViewById(R.id.TextView02);
-        longitudeField = (TextView) findViewById(R.id.TextView04);
-
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
+
+    @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, MyService.class);
+        startService(intent);
+
+
+            setContentView(R.layout.activity_san_tour);
+
+            latitudeField = (TextView) findViewById(R.id.TextView02);
+            longitudeField = (TextView) findViewById(R.id.TextView04);
+            MyService ser = MyService.getInstance();
+            MyService.getInstance().registerReceiver(
+                    new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            double latitude = intent.getDoubleExtra(MyService.EXTRA_LATITUDE, 0);
+                            double longitude = intent.getDoubleExtra(MyService.EXTRA_LONGITUDE, 0);
+                            latitudeField.setText(latitude+"");
+                            longitudeField.setText(longitude+"");
+
+                        }
+                    }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+            );
+
+            SupportMapFragment mapFragment =
+                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
 
         public void buttonOnClick(View v){
 
@@ -127,6 +163,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         }
     }
+
+
 
     }
 
