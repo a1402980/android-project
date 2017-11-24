@@ -57,7 +57,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             latitudeField = (TextView) findViewById(R.id.TextView02);
             longitudeField = (TextView) findViewById(R.id.TextView04);
             MyService ser = MyService.getInstance();
-            MyService.getInstance().registerReceiver(
+/*            MyService.getInstance().registerReceiver(
                     new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
@@ -68,7 +68,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                         }
                     }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
-            );
+            );*/
 
             SupportMapFragment mapFragment =
                     (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
