@@ -202,7 +202,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
     public void updateView(Location loc) {
-            Log.d("Update", loc + "");
+
+        float distance;
+        if(trackingPoints != null) {
+            distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
+        }else
+        {
+            distance = 3;
+        }
+        Log.d("Update", loc + " // Distance : "+distance);
+        if (distance<5) {
+
             longitudeField.setText(loc.getLongitude() + "");
             latitudeField.setText(loc.getLatitude() + "");
 
@@ -213,15 +223,31 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             }
             trackingPoints.add(coordinates);
 
+            if (mMap!= null) {
+                Polyline route = mMap.addPolyline(new PolylineOptions()
+                        .width(12)
+                        .color(Color.BLUE)
+                        .geodesic(true)
+                        .zIndex(1));
 
-        Polyline route = mMap.addPolyline(new PolylineOptions()
-                .width(12)
-                .color(Color.BLUE)
-                .geodesic(true)
-                .zIndex(1));
 
+                route.setPoints(trackingPoints);
+            }
+        }
+    }
 
-        route.setPoints(trackingPoints);
+    //Help https://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
+    public static float distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+
+        return dist;
     }
 
 
@@ -276,7 +302,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 0;
+    private static final float LOCATION_DISTANCE = 1;
 
     private class LocationListener implements android.location.LocationListener, Serializable {
         Location mLastLocation;
@@ -291,8 +317,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
             LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
-            mMap.animateCamera(yourLocation);
+            try {
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 50);
+                mMap.animateCamera(yourLocation);
+            }catch (Exception e)
+            {
+
+            }
+
             updateView(location);
 
 
