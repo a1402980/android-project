@@ -42,6 +42,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private FirebaseDatabase database;
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
 
+    // some transient state for the activity instance
+    private String mGameState;
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -51,6 +55,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // recovering the instance state
+        if (savedInstanceState != null) {
+            mGameState = savedInstanceState.getString("GAMESTATEKEY");
+        }
+
 
 
         setContentView(R.layout.activity_san_tour);
@@ -140,6 +150,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
 
+            if (trackingPoints != null) {
+                Polyline route = mMap.addPolyline(new PolylineOptions()
+                        .width(12)
+                        .color(Color.BLUE)
+                        .geodesic(true)
+                        .zIndex(1));
+
+
+                route.setPoints(trackingPoints);
+            }
+
         } else {
             // otherwise ask for the permission
             ActivityCompat.requestPermissions(this,
@@ -206,31 +227,107 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
     public void updateView(Location loc) {
-        Log.d("Update", loc + "");
-        longitudeField.setText(loc.getLongitude() + "");
-        latitudeField.setText(loc.getLatitude() + "");
 
-        //turning location into LatLng
-        LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
-        if (trackingPoints == null){
-            trackingPoints = new ArrayList<>();
+        float distance;
+        if(trackingPoints != null) {
+            distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
+        }else
+        {
+            distance = 3;
         }
-        trackingPoints.add(coordinates);
+        Log.d("Update", loc + " // Distance : "+distance);
+        if (distance<5) {
 
-        Polyline route = mMap.addPolyline(new PolylineOptions()
-                .width(12)
-                .color(Color.BLUE)
-                .geodesic(true)
-                .zIndex(1));
+            longitudeField.setText(loc.getLongitude() + "");
+            latitudeField.setText(loc.getLatitude() + "");
+
+            //turning location into LatLng
+            LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
+            if (trackingPoints == null) {
+                trackingPoints = new ArrayList<>();
+            }
+            trackingPoints.add(coordinates);
+
+            if (mMap!= null) {
+                Polyline route = mMap.addPolyline(new PolylineOptions()
+                        .width(12)
+                        .color(Color.BLUE)
+                        .geodesic(true)
+                        .zIndex(1));
 
 
-        route.setPoints(trackingPoints);
+                route.setPoints(trackingPoints);
+            }
+        }
+    }
+
+    //Help https://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
+    public static float distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+
+        return dist;
+    }
+
+
+    // This callback is called only when there is a saved instance previously saved using
+    // onSaveInstanceState(). We restore some state in onCreate() while we can optionally restore
+    // other state here, possibly usable after onStart() has completed.
+    // The savedInstanceState Bundle is same as the one used in onCreate().
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        trackingPoints = new ArrayList<LatLng>();
+        double[] listLatitute = savedInstanceState.getDoubleArray("ARRAY_LATITUDE");
+        double[] listLongitude = savedInstanceState.getDoubleArray("ARRAY_LONGITUDE");
+        for (int i = 0; i < listLatitute.length; i++)
+        {
+            LatLng temp = new LatLng(listLatitute[i], listLongitude[i]);
+            trackingPoints.add(temp);
+        }
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+
+        double[] listLatitute;
+        double[] listLongitude;
+
+        if (trackingPoints != null) {
+             listLatitute = new double[trackingPoints.size()];
+             listLongitude = new double[trackingPoints.size()];
+
+            for (int i = 0; i < trackingPoints.size(); i++) {
+                listLatitute[i] = trackingPoints.get(i).latitude;
+                listLongitude[i] = trackingPoints.get(i).longitude;
+            }
+        }
+        else
+        {
+             listLatitute = new double[0];
+             listLongitude = new double[0];
+        }
+        outState.putDoubleArray("ARRAY_LATITUDE",listLatitute);
+        outState.putDoubleArray("ARRAY_LONGITUDE",listLongitude);
+        //outState.putString(GAME_STATE_KEY, mGameState);
+        //outState.putString(TEXT_VIEW_KEY, mTextView.getText());
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 0;
+    private static final float LOCATION_DISTANCE = 1;
 
     private class LocationListener implements android.location.LocationListener, Serializable {
         Location mLastLocation;
@@ -244,7 +341,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
+            LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
+            try {
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 50);
+                mMap.animateCamera(yourLocation);
+            }catch (Exception e)
+            {
+
+            }
+
             updateView(location);
+
 
         }
 
