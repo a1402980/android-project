@@ -125,6 +125,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
 
+            if (trackingPoints != null) {
+                Polyline route = mMap.addPolyline(new PolylineOptions()
+                        .width(12)
+                        .color(Color.BLUE)
+                        .geodesic(true)
+                        .zIndex(1));
+
+
+                route.setPoints(trackingPoints);
+            }
+
         } else {
             // otherwise ask for the permission
             ActivityCompat.requestPermissions(this,
@@ -191,16 +202,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
     public void updateView(Location loc) {
-        Log.d("Update", loc + "");
-        longitudeField.setText(loc.getLongitude() + "");
-        latitudeField.setText(loc.getLatitude() + "");
+            Log.d("Update", loc + "");
+            longitudeField.setText(loc.getLongitude() + "");
+            latitudeField.setText(loc.getLatitude() + "");
 
-        //turning location into LatLng
-        LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
-        if (trackingPoints == null){
-            trackingPoints = new ArrayList<>();
-        }
-        trackingPoints.add(coordinates);
+            //turning location into LatLng
+            LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
+            if (trackingPoints == null) {
+                trackingPoints = new ArrayList<>();
+            }
+            trackingPoints.add(coordinates);
+
 
         Polyline route = mMap.addPolyline(new PolylineOptions()
                 .width(12)
@@ -219,13 +231,41 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     // The savedInstanceState Bundle is same as the one used in onCreate().
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        trackingPoints = savedInstanceState.getParcelableArrayList("asd");
+        trackingPoints = new ArrayList<LatLng>();
+        double[] listLatitute = savedInstanceState.getDoubleArray("ARRAY_LATITUDE");
+        double[] listLongitude = savedInstanceState.getDoubleArray("ARRAY_LONGITUDE");
+        for (int i = 0; i < listLatitute.length; i++)
+        {
+            LatLng temp = new LatLng(listLatitute[i], listLongitude[i]);
+            trackingPoints.add(temp);
+        }
     }
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("asd",trackingPoints);
+        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+
+        double[] listLatitute;
+        double[] listLongitude;
+
+        if (trackingPoints != null) {
+             listLatitute = new double[trackingPoints.size()];
+             listLongitude = new double[trackingPoints.size()];
+
+            for (int i = 0; i < trackingPoints.size(); i++) {
+                listLatitute[i] = trackingPoints.get(i).latitude;
+                listLongitude[i] = trackingPoints.get(i).longitude;
+            }
+        }
+        else
+        {
+             listLatitute = new double[0];
+             listLongitude = new double[0];
+        }
+        outState.putDoubleArray("ARRAY_LATITUDE",listLatitute);
+        outState.putDoubleArray("ARRAY_LONGITUDE",listLongitude);
         //outState.putString(GAME_STATE_KEY, mGameState);
         //outState.putString(TEXT_VIEW_KEY, mTextView.getText());
 
@@ -250,7 +290,11 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
+            LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
+            mMap.animateCamera(yourLocation);
             updateView(location);
+
 
         }
 
