@@ -1,6 +1,7 @@
 package hes_so.android_project_2017;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +46,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private boolean tracking;
     private FirebaseDatabase database;
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
+
+    //JCH: Storage reference for image upload onto the storage, button to select the image from gallery and integer for gallery intent
+    private StorageReference mStorage;
+    private Button bSelectImage;
+    private static final int GALLERY_INTENT = 2;
+
+
 
     // some transient state for the activity instance
     private String mGameState;
@@ -76,6 +86,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         gpsdataRef = database.getReference("gpsData");
         podcategRef = database.getReference("PODcategories");
 
+
         //To add a new track
 //        Track track1 = new Track("Track 1", "This is a first track");
 //
@@ -84,6 +95,20 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 //        Map<String, Object> newTracks = new HashMap<>();
 //        newTracks.put( key, track1 );
 //        trackRef.updateChildren(newTracks);
+
+
+        //Code for uploading an image, working on it, Jordi Chafer
+        mStorage = FirebaseStorage.getInstance().getReference();
+        bSelectImage = (Button) findViewById(R.id.selectImage);
+        bSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+
+                startActivityForResult(intent, GALLERY_INTENT);
+            }
+        });
 
 
         latitudeField = (TextView) findViewById(R.id.TextView02);
