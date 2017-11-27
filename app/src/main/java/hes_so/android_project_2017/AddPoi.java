@@ -52,6 +52,11 @@ public class AddPoi extends AppCompatActivity {
 
     }
 
+    public void cancelOnClick(View v) {
+        finish();
+        onBackPressed();
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch(requestCode) {
