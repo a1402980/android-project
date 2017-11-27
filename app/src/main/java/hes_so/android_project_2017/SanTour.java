@@ -100,24 +100,15 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 //        trackRef.updateChildren(newTracks);
 
 
-        //Code for uploading an image, working on it, Jordi Chafer
         mStorage = FirebaseStorage.getInstance().getReference();
-        bSelectImage = (Button) findViewById(R.id.selectImage);
-        bSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
 
-                startActivityForResult(intent, GALLERY_INTENT);
-            }
-       });
 
         bAddPoi = (Button) findViewById(R.id.add_poi);
         bAddPoi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SanTour.this, AddPoi.class);
+                intent.setType("image/*");
                 startActivity(intent);
             }
         });
