@@ -18,7 +18,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="185dp"
+        android:layout_height="54dp"
         app:srcCompat="@android:drawable/ic_menu_report_image" />
 
     <LinearLayout
@@ -96,7 +96,7 @@
         <EditText
             android:id="@+id/editText4"
             android:layout_width="match_parent"
-            android:layout_height="91dp"
+            android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textMultiLine" />
 
