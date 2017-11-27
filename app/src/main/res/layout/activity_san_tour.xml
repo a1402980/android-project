@@ -129,24 +129,17 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="95dp"
+            android:layout_width="191dp"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_add"
             android:text="POD" />
 
         <Button
             android:id="@+id/add_poi"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_add"
             android:text="POI" />
-
-        <Button
-            android:id="@+id/selectImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Upload Picture" />
 
     </LinearLayout>
 
