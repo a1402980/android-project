@@ -135,6 +135,7 @@
             android:text="POD" />
 
         <Button
+            android:id="@+id/add_poi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_add"

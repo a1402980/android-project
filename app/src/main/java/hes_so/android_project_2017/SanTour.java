@@ -50,6 +50,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     //JCH: Storage reference for image upload onto the storage, button to select the image from gallery and integer for gallery intent
     private StorageReference mStorage;
     private Button bSelectImage;
+    private Button bAddPoi;
     private static final int GALLERY_INTENT = 2;
 
 
@@ -76,6 +77,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
         setContentView(R.layout.activity_san_tour);
+
+        setTitle("SanTour");
 
         database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);
@@ -109,6 +112,15 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 startActivityForResult(intent, GALLERY_INTENT);
             }
        });
+
+        bAddPoi = (Button) findViewById(R.id.add_poi);
+        bAddPoi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SanTour.this, AddPoi.class);
+                startActivity(intent);
+            }
+        });
 
 
 
