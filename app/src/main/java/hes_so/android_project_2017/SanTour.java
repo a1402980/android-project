@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -113,8 +115,70 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         latitudeField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
         startLocationListener();
+        startTimer();
 
     }
+
+
+    private int seconds = 0;
+    private int minutes = 0;
+    private boolean timerIsRunning = false;
+
+    private void startTimer()
+    {
+
+        //Declare the timer
+        Timer t = new Timer();
+        //Set the schedule function and rate
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        String secondsS;
+                        String minutesS;
+
+                        if(timerIsRunning) {
+
+                            seconds++;
+                            if(seconds >= 60)
+                            {
+                                minutes++;
+                                seconds = 0;
+                            }
+                            TextView tv = (TextView) findViewById(R.id.timeTextView);
+
+                            if(seconds<10)
+                            {
+                                secondsS ="0"+seconds;
+                            }else
+                            {
+                                secondsS = ""+seconds;
+                            }
+
+                            if(minutes<10)
+                            {
+                                minutesS ="0"+minutes;
+                            }else
+                            {
+                                minutesS = ""+minutes;
+                            }
+
+                            tv.setText(String.valueOf(minutesS) + ":" + String.valueOf(secondsS));
+                        }
+                    }
+
+                });
+            }
+
+        }, 0, 1000);
+
+    }
+
 
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
@@ -150,10 +214,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
+            timerIsRunning = true;
             Button button = (Button) v;
             ((Button) v).setText("Stop");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
         }else{
+            timerIsRunning = false;
             tracking = false;
             Button button = (Button) v;
             ((Button) v).setText("Start");
@@ -262,7 +328,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         }
     }
-
+    private float distanceComplete = 0;
 
     public void updateView(Location loc) {
 
@@ -271,13 +337,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
         }else
         {
-            distance = 3;
+            distance = 15;
         }
         Log.d("Update", loc + " // Distance : "+distance);
-        if (distance<10) {
-
-            longitudeField.setText(loc.getLongitude() + "");
-            latitudeField.setText(loc.getLatitude() + "");
+        if (distance<20 && distance>10) {
+            distanceComplete = distanceComplete + distance;
+            longitudeField.setText(String.format("%.4f", loc.getLongitude()));
+            latitudeField.setText(String.format("%.4f", loc.getLatitude()));
 
             //turning location into LatLng
             LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
@@ -296,6 +362,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 route.setPoints(trackingPoints);
             }
+
+
+
+
+            TextView tvDistance = findViewById(R.id.distanceTextView);
+            tvDistance.setText(String.format("%.1f", distanceComplete));
         }
     }
 

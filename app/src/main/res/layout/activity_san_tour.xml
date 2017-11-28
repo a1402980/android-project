@@ -89,11 +89,12 @@
         <!--android:layout_weight="1"-->
         <!--android:text="Timer:" />-->
         <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_vertical|left"
             android:drawableLeft="@android:drawable/ic_menu_recent_history"
+            android:gravity="center_vertical|left"
             android:text="00:00" />
 
         <!--<TextView-->
@@ -103,6 +104,7 @@
         <!--android:gravity="end"-->
         <!--android:text="KM:" />-->
         <TextView
+            android:id="@+id/distanceTextView"
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
