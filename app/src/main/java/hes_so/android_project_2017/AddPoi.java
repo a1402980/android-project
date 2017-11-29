@@ -50,33 +50,25 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
         storageReference= FirebaseStorage.getInstance().getReference();
 
-        bSelectImage = (Button) findViewById(R.id.takePicture);
-        bTakeImage = (Button) findViewById(R.id.choosePicture);
+        bSelectImage = (Button) findViewById(R.id.choosePicture);
+        bTakeImage = (Button) findViewById(R.id.takePicture);
         buploadImage = (Button) findViewById(R.id.uploadPicture);
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
         bSelectImage.setOnClickListener(this);
+        buploadImage.setOnClickListener(this);
+        bTakeImage.setOnClickListener(this);
 
 
- /*       bSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePicture, 0);//zero can be replaced with any action code
-            }
-        });
-*/
 
-        bTakeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
-            }
-        });
     }
+
+    public void takePhoto() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, 0);
+    }
+
 
     //method to show file chooser
     private void showFileChooser() {
@@ -97,7 +89,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
-                Toast.makeText(this, "SELECTED IMAGE!", Toast.LENGTH_LONG).show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -107,32 +98,15 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
 
 
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
-            case 0:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    imageview.setImageURI(selectedImage);
-                }
-
-                break;
-            case 1:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    imageview.setImageURI(selectedImage);
-                }
-                break;
-        }
-    }*/
 
     @Override
     public void onClick(View view) {
         //if the clicked button is choose
         if (view == bSelectImage) {
             showFileChooser();
+        }
+        else if(view== bTakeImage){
+            takePhoto();
         }
         else if (view == buploadImage) {
             uploadFile();
