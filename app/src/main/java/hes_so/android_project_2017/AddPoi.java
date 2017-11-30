@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
 import android.graphics.Bitmap;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -42,6 +43,9 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     //a Uri object to store file path
     private Uri filePath;
 
+    private String longitudeData;
+    private String latitudeData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,30 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         buploadImage = (Button) findViewById(R.id.uploadPicture);
 
         imageView = (ImageView) findViewById(R.id.imageView);
+
+
+
+
+        //getting the GPS data from SanTour class
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                longitudeData = null;
+                latitudeData = null;
+            } else {
+                longitudeData = extras.getString("longitudeData");
+                latitudeData = extras.getString("latitudeData");
+            }
+        } else {
+            latitudeData = (String) savedInstanceState.getSerializable("longitudeData");
+            longitudeData = (String) savedInstanceState.getSerializable("latitudeData");
+        }
+
+        //show the text data on the page
+        TextView longitudeView = (TextView) findViewById(R.id.longitudeText);
+        TextView latitudeView = (TextView) findViewById(R.id.latitudeText);
+        latitudeView.setText(latitudeData);
+        longitudeView.setText(longitudeData);
 
     }
 

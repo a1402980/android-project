@@ -14,6 +14,11 @@
         android:layout_height="318dp"
         tools:context="hes_so.android_project_2017.SanTour" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -27,7 +32,6 @@
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"
             android:layout_marginRight="5dip"
             android:text="Latitude: "
             android:textSize="15dip" />
@@ -47,14 +51,14 @@
             android:layout_marginLeft="10dip"
             android:layout_marginRight="5dip"
             android:text="Longitute: "
-            android:textSize="15dip"></TextView>
+            android:textSize="15dip"/>
 
         <TextView
             android:id="@+id/TextView04"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="unknown"
-            android:textSize="15dip"></TextView>
+            android:textSize="15dip"/>
 
 
     </LinearLayout>
@@ -110,14 +114,13 @@
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_menu_mapmode"
             android:gravity="center_vertical|left"
-            android:text="24" />
+            android:text="0" />
 
         <Button
             android:id="@+id/trackButton"
             android:layout_width="110dp"
             android:layout_height="@android:dimen/app_icon_size"
             android:layout_weight="1"
-            android:layout_marginHorizontal="10dp"
             android:background="?attr/colorAccent"
             android:onClick="buttonOnClick"
             android:text="Start" />
@@ -125,26 +128,30 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="191dp"
             android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_width="0dip"
             android:drawableLeft="@android:drawable/ic_menu_add"
             android:text="POD" />
 
         <Button
             android:id="@+id/add_poi"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_width="0dip"
             android:drawableLeft="@android:drawable/ic_menu_add"
             android:onClick="buttonAddPOIOnClick"
             android:text="POI" />
 
     </LinearLayout>
 
+    </LinearLayout>
 
 </LinearLayout>

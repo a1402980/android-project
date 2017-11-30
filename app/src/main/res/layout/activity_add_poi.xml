@@ -72,20 +72,20 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/latitudeText"
             android:layout_width="98dp"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="16.2232" />
+            android:gravity="center"
+            android:text="null" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/longitudeText"
             android:layout_width="124dp"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="93.2223" />
+            android:gravity="center"
+            android:text="null" />
 
 
     </LinearLayout>
