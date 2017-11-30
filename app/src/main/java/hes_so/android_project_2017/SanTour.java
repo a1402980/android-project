@@ -103,6 +103,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     public void buttonAddPOIOnClick(View v) {
         Intent intent = new Intent(SanTour.this, AddPoi.class);
+        String longitude = longitudeField.getText().toString();
+        String latitude = latitudeField.getText().toString();
+        intent.putExtra("longitudeData" ,longitude);
+        intent.putExtra("latitudeData" ,latitude);
         startActivity(intent);
     }
 
@@ -216,7 +220,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
 
             //LatLng coordinate = new LatLng(21.000000, -101.400000);
             //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
