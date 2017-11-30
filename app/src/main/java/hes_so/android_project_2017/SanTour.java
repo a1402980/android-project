@@ -27,14 +27,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -105,13 +101,16 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     }
 
+    static final int PICK_CONTACT_REQUEST = 1;
+
     public void buttonAddPOIOnClick(View v) {
+        timerIsRunning = false;
         Intent intent = new Intent(SanTour.this, AddPoi.class);
         String longitude = longitudeField.getText().toString();
         String latitude = latitudeField.getText().toString();
         intent.putExtra("longitudeData" ,longitude);
         intent.putExtra("latitudeData" ,latitude);
-        startActivity(intent);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
 
 
@@ -327,42 +326,69 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     public void updateView(Location loc) {
 
-        float distance;
-        if(trackingPoints != null) {
-            distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
-        }else
-        {
-            distance = 15;
+
+        if (loc != null) {
+            float distance;
+            if (trackingPoints != null) {
+                if (trackingPoints.size()>1)
+                {
+                    distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
+                }else {
+                    distance = 15;
+                }
+            } else {
+                distance = 15;
+            }
+            Log.d("Update", loc + " // Distance : " + distance);
+            if ((distance<40 && distance>10)) {
+                distanceComplete = distanceComplete + distance;
+                longitudeField.setText(String.format("%.4f", loc.getLongitude()));
+                latitudeField.setText(String.format("%.4f", loc.getLatitude()));
+
+                //turning location into LatLng
+                LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
+                if (trackingPoints == null) {
+                    trackingPoints = new ArrayList<>();
+                }
+                trackingPoints.add(coordinates);
+
+                if (mMap != null) {
+                    Polyline route = mMap.addPolyline(new PolylineOptions()
+                            .width(12)
+                            .color(Color.BLUE)
+                            .geodesic(true)
+                            .zIndex(1));
+
+
+                    route.setPoints(trackingPoints);
+                }
+
+
+                TextView tvDistance = findViewById(R.id.distanceTextView);
+                tvDistance.setText(String.format("%.1f", distanceComplete));
+            }
         }
-        Log.d("Update", loc + " // Distance : "+distance);
-        if (distance<40 && distance>10) {
-            distanceComplete = distanceComplete + distance;
-            longitudeField.setText(String.format("%.4f", loc.getLongitude()));
-            latitudeField.setText(String.format("%.4f", loc.getLatitude()));
+        if (loc == null && trackingPoints != null)
+        {
+            if(trackingPoints.size()>0) {
+                LatLng last = trackingPoints.get(trackingPoints.size() - 1);
+                longitudeField.setText(String.format("%.4f", last.longitude));
+                latitudeField.setText(String.format("%.4f", last.latitude));
 
-            //turning location into LatLng
-            LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
-            if (trackingPoints == null) {
-                trackingPoints = new ArrayList<>();
+                if (mMap != null) {
+                    Polyline route = mMap.addPolyline(new PolylineOptions()
+                            .width(12)
+                            .color(Color.BLUE)
+                            .geodesic(true)
+                            .zIndex(1));
+
+
+                    route.setPoints(trackingPoints);
+                }
+
+                TextView tvDistance = findViewById(R.id.distanceTextView);
+                tvDistance.setText(String.format("%.1f", distanceComplete));
             }
-            trackingPoints.add(coordinates);
-
-            if (mMap!= null) {
-                Polyline route = mMap.addPolyline(new PolylineOptions()
-                        .width(12)
-                        .color(Color.BLUE)
-                        .geodesic(true)
-                        .zIndex(1));
-
-
-                route.setPoints(trackingPoints);
-            }
-
-
-
-
-            TextView tvDistance = findViewById(R.id.distanceTextView);
-            tvDistance.setText(String.format("%.1f", distanceComplete));
         }
     }
 
@@ -392,6 +418,11 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             LatLng temp = new LatLng(listLatitute[i], listLongitude[i]);
             trackingPoints.add(temp);
         }
+        minutes = savedInstanceState.getInt("MINUTES_INT");
+        seconds = savedInstanceState.getInt("SECONDES_INT");
+        timerIsRunning = savedInstanceState.getBoolean("ISTIMERRUNNING");
+        distanceComplete = savedInstanceState.getFloat("DISTANCE_FLOAT");
+        startTimer();
     }
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
@@ -419,7 +450,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
         outState.putDoubleArray("ARRAY_LATITUDE",listLatitute);
         outState.putDoubleArray("ARRAY_LONGITUDE",listLongitude);
+        outState.putFloat("DISTANCE_FLOAT", distanceComplete);
+        outState.putInt("MINUTES_INT", minutes);
+        outState.putInt("SECONDES_INT", seconds);
+        outState.putBoolean("ISTIMERRUNNING", timerIsRunning);
+        startTimer();
 
+
+            updateView(null);
     }
 
     private static final String TAG = "BOOMBOOMTESTGPS";
