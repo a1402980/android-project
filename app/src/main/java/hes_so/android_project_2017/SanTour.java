@@ -335,7 +335,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             distance = 15;
         }
         Log.d("Update", loc + " // Distance : "+distance);
-        if (distance<20 && distance>10) {
+        if (distance<40 && distance>10) {
             distanceComplete = distanceComplete + distance;
             longitudeField.setText(String.format("%.4f", loc.getLongitude()));
             latitudeField.setText(String.format("%.4f", loc.getLatitude()));
