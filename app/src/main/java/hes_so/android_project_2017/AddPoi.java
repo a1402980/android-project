@@ -2,7 +2,10 @@ package hes_so.android_project_2017;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.Image;
+import android.graphics.Bitmap;
+import android.widget.Toast;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -19,10 +22,9 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.widget.Toast;
 
+
+import java.io.File;
 import java.io.IOException;
 
 
@@ -60,8 +62,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         buploadImage.setOnClickListener(this);
         bTakeImage.setOnClickListener(this);
 
-
-
     }
 
     public void takePhoto() {
@@ -81,11 +81,27 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
     //handling the image chooser activity result
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+
+
+        if (requestCode==0 && resultCode == RESULT_OK){
+            filePath = imageReturnedIntent.getData();
+    //        try {
+                Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                imageView.setImageBitmap(bitmap);
+
+   //         } catch (IOException e) {
+   //             e.printStackTrace();
+    //        }
+
+
+        }
+
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            filePath = data.getData();
+            filePath = imageReturnedIntent.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
@@ -95,7 +111,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             }
         }
     }
-
 
 
 
