@@ -46,7 +46,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView longitudeField;
     private List<LatLng> trackingPoints;
     private boolean tracking;
-    private FirebaseDatabase database;
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
 
     private Button bAddPoi;
@@ -63,6 +62,18 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     }
 
+
+    private static FirebaseDatabase database;
+
+    public static FirebaseDatabase getDatabase() {
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+            database.setPersistenceEnabled(true);
+        }
+        return database;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,38 +89,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         setTitle("SanTour");
 
-        database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true);
+        FirebaseDatabase mdatabase = getDatabase();
 
-        trackRef = database.getReference("tracks");
-        poiRef = database.getReference("POI");
-        podRef = database.getReference("POD");
-        gpsdataRef = database.getReference("gpsData");
-        podcategRef = database.getReference("PODcategories");
-
-
-        //To add a new track
-//        Track track1 = new Track("Track 1", "This is a first track");
-//
-//        String key = trackRef.push().getKey();
-//
-//        Map<String, Object> newTracks = new HashMap<>();
-//        newTracks.put( key, track1 );
-//        trackRef.updateChildren(newTracks);
-
-
-
-
-        bAddPoi = (Button) findViewById(R.id.add_poi);
-        bAddPoi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SanTour.this, AddPoi.class);
-                startActivity(intent);
-            }
-        });
-
-
+        trackRef = mdatabase.getReference("tracks");
+        poiRef = mdatabase.getReference("POI");
+        podRef = mdatabase.getReference("POD");
+        gpsdataRef = mdatabase.getReference("gpsData");
+        podcategRef = mdatabase.getReference("PODcategories");
 
 
         latitudeField = (TextView) findViewById(R.id.TextView02);
@@ -117,6 +103,11 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startLocationListener();
         startTimer();
 
+    }
+
+    public void buttonAddPOIOnClick(View v) {
+        Intent intent = new Intent(SanTour.this, AddPoi.class);
+        startActivity(intent);
     }
 
 

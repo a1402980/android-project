@@ -137,6 +137,7 @@
             android:layout_width="95dp"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_add"
+            android:onClick="buttonAddPOIOnClick"
             android:text="POI" />
 
     </LinearLayout>

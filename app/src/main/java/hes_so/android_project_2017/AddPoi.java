@@ -58,10 +58,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
-        bSelectImage.setOnClickListener(this);
-        buploadImage.setOnClickListener(this);
-        bTakeImage.setOnClickListener(this);
-
     }
 
     public void takePhoto() {
