@@ -8,7 +8,7 @@
 
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/poiName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -50,13 +50,6 @@
 
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/uploadPicture"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="UPLOAD PICTURE" />
 
     <TextView
         android:id="@+id/textView"
@@ -127,7 +120,7 @@
                 android:text="Cancel" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/savePOI"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
