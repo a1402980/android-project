@@ -155,9 +155,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         }
 
         else if(view== savePoi){
-
             uploadFile();
-
         }
     }
 
@@ -178,7 +176,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             progressDialog.setTitle("Uploading");
             progressDialog.show();
 
-            StorageReference riversRef = storageReference.child( PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
+            StorageReference riversRef = storageReference.child( "/images/"+PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
