@@ -48,7 +48,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView longitudeField;
     private List<LatLng> trackingPoints;
     private boolean tracking;
-    private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
+    private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef, trackPointsRef;
     private Timer t;
     private Button bAddPoi;
 
@@ -263,19 +263,26 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             //Upload the trek the user did
 
-
+        String trackPointsKey;
         String trackName = ((EditText) findViewById(R.id.txtTrackName)).getText().toString();
 
-        Track track1 = new Track(trackName, "This is a first track");
+        Track track1 = new Track(trackName, "");
         String trackKey = trackRef.push().getKey();
 
         Map<String, Object> newTracks = new HashMap<>();
         newTracks.put( trackKey, track1 );
         trackRef.updateChildren(newTracks);
 
-            /*String id =  getCurrentDate().toString();
-            Trek trek = new Trek(id, trackingPoints);
-            trackRef.child("treks").setValue(trek);*/
+        trackPointsRef = trackRef.child(trackKey).child("GPS");
+        Map<String, Object> newTrackPoints = new HashMap<>();
+
+        for (int i = 0; i < trackingPoints.size(); i++) {
+            trackPointsKey = String.valueOf(i);
+            newTrackPoints.put(trackPointsKey, trackingPoints.get(i));
+        }
+
+
+        trackPointsRef.updateChildren(newTrackPoints);
     }
 
 

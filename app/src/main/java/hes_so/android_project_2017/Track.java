@@ -5,6 +5,7 @@ package hes_so.android_project_2017;
  */
 
 public class Track {
+
     private int id;
     private String name;
     private String description;
