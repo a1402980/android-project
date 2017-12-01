@@ -9,15 +9,26 @@ public class POI {
     private int track_Id;
     private String name;
     private String description;
+    private String filePath;
+
 
     public POI(){
 
     }
 
-    public POI(int track_Id, String name, String description){
+    public POI(int track_Id, String name, String description, String filePath){
         this.track_Id = track_Id;
         this.name = name;
         this.description = description;
+        this.filePath = filePath;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public int getId(){
