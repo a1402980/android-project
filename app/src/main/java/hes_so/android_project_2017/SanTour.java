@@ -46,7 +46,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private List<LatLng> trackingPoints;
     private boolean tracking;
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
-
+    private Timer t;
     private Button bAddPoi;
 
     FirebaseDatabase mdatabase = getDatabase();
@@ -125,59 +125,60 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private void startTimer()
     {
 
-        //Declare the timer
-        Timer t = new Timer();
-        //Set the schedule function and rate
-        t.scheduleAtFixedRate(new TimerTask() {
+        if (t == null) {
+            //Declare the timer
+            t = new Timer();
+            //Set the schedule function and rate
+            t.scheduleAtFixedRate(new TimerTask() {
 
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
+                        @Override
+                        public void run() {
 
-                        String secondsS;
-                        String minutesS;
 
-                        if(timerIsRunning) {
 
-                            seconds++;
-                            if(seconds >= 60)
-                            {
-                                minutes++;
-                                seconds = 0;
+                            if (timerIsRunning) {
+
+                                seconds++;
+                                if (seconds >= 60) {
+                                    minutes++;
+                                    seconds = 0;
+                                }
+                                updateTime();
                             }
-                            TextView tv = (TextView) findViewById(R.id.timeTextView);
-
-                            if(seconds<10)
-                            {
-                                secondsS ="0"+seconds;
-                            }else
-                            {
-                                secondsS = ""+seconds;
-                            }
-
-                            if(minutes<10)
-                            {
-                                minutesS ="0"+minutes;
-                            }else
-                            {
-                                minutesS = ""+minutes;
-                            }
-
-                            tv.setText(String.valueOf(minutesS) + ":" + String.valueOf(secondsS));
                         }
-                    }
 
-                });
-            }
+                    });
+                }
 
-        }, 0, 1000);
+            }, 0, 1000);
+        }
 
     }
 
+    private void updateTime() {
+        TextView tv = (TextView) findViewById(R.id.timeTextView);
 
+        String secondsS;
+        String minutesS;
+
+        if (seconds < 10) {
+            secondsS = "0" + seconds;
+        } else {
+            secondsS = "" + seconds;
+        }
+
+        if (minutes < 10) {
+            minutesS = "0" + minutes;
+        } else {
+            minutesS = "" + minutes;
+        }
+
+        tv.setText(String.valueOf(minutesS) + ":" + String.valueOf(secondsS));
+    }
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
@@ -226,7 +227,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             uploadTracks(trackingPoints);
             minutes = 0;
             seconds = 0;
+            distanceComplete = 0;
             trackingPoints = new ArrayList<LatLng>();
+            updateView(null);
+            updateTime();
         }
 
 
@@ -390,9 +394,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     route.setPoints(trackingPoints);
                 }
 
-
-                TextView tvDistance = findViewById(R.id.distanceTextView);
-                tvDistance.setText(String.format("%.1f", distanceComplete));
             }
         }
         if (loc == null && trackingPoints != null)
@@ -413,10 +414,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     route.setPoints(trackingPoints);
                 }
 
-                TextView tvDistance = findViewById(R.id.distanceTextView);
-                tvDistance.setText(String.format("%.1f", distanceComplete));
             }
         }
+        TextView tvDistance = findViewById(R.id.distanceTextView);
+        tvDistance.setText(String.format("%.1f", distanceComplete));
     }
 
     //Help https://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
