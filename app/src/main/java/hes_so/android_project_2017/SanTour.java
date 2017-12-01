@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
@@ -31,7 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -260,9 +263,19 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             //Upload the trek the user did
 
-            String id =  getCurrentDate().toString();
+
+        String trackName = ((EditText) findViewById(R.id.txtTrackName)).getText().toString();
+
+        Track track1 = new Track(trackName, "This is a first track");
+        String trackKey = trackRef.push().getKey();
+
+        Map<String, Object> newTracks = new HashMap<>();
+        newTracks.put( trackKey, track1 );
+        trackRef.updateChildren(newTracks);
+
+            /*String id =  getCurrentDate().toString();
             Trek trek = new Trek(id, trackingPoints);
-            trackRef.child("treks").setValue(trek);
+            trackRef.child("treks").setValue(trek);*/
     }
 
 
