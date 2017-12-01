@@ -2,9 +2,10 @@ package hes_so.android_project_2017;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.Image;
 import android.graphics.Bitmap;
+import android.os.Environment;
+import android.os.PersistableBundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ import java.util.Calendar;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.Date;
 
 
 public class AddPoi extends AppCompatActivity implements View.OnClickListener{
@@ -51,6 +52,8 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
     private String longitudeData;
     private String latitudeData;
+
+    String mCurrentPhotoPath;
 
 
     @Override
@@ -89,15 +92,20 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         //show the text data on the page
         TextView longitudeView = (TextView) findViewById(R.id.longitudeText);
         TextView latitudeView = (TextView) findViewById(R.id.latitudeText);
-        latitudeView.setText(latitudeData);
-        longitudeView.setText(longitudeData);
+        if (latitudeData != null && longitudeData != null) {
+            latitudeView.setText(latitudeData);
+            longitudeView.setText(longitudeData);
+        }
 
     }
 
     public void takePhoto() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, 0);
+
     }
+
+
 
 
     //method to show file chooser
@@ -114,18 +122,11 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-
-
         if (requestCode==0 && resultCode == RESULT_OK){
             filePath = imageReturnedIntent.getData();
-    //        try {
-                Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                imageView.setImageBitmap(bitmap);
 
-   //         } catch (IOException e) {
-   //             e.printStackTrace();
-    //        }
-
+            Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
+            imageView.setImageBitmap(bitmap);
 
         }
 
@@ -155,9 +156,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         }
 
         else if(view== savePoi){
-
             uploadFile();
-
         }
     }
 
@@ -178,7 +177,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             progressDialog.setTitle("Uploading");
             progressDialog.show();
 
-            StorageReference riversRef = storageReference.child( PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
+            StorageReference riversRef = storageReference.child( "/images/"+ PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -222,5 +221,29 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     public void cancelOnClick(View v) {
         finish();
         onBackPressed();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString("LONGITUDEDATA", latitudeData);
+        outState.putString("LATITUDDATA",longitudeData);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        latitudeData = (String) savedInstanceState.getString("LONGITUDEDATA");
+        longitudeData = (String) savedInstanceState.getString("LATITUDDATA");
+
+        TextView longitudeView = (TextView) findViewById(R.id.longitudeText);
+        TextView latitudeView = (TextView) findViewById(R.id.latitudeText);
+        if (latitudeData != null && longitudeData != null) {
+            latitudeView.setText(latitudeData);
+            longitudeView.setText(longitudeData);
+        }
+
     }
 }
