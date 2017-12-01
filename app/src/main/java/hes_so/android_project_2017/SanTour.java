@@ -30,9 +30,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+
 
 
 public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
@@ -45,6 +48,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef;
 
     private Button bAddPoi;
+
+    FirebaseDatabase mdatabase = getDatabase();
 
 
 
@@ -85,7 +90,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         setTitle("SanTour");
 
-        FirebaseDatabase mdatabase = getDatabase();
 
         trackRef = mdatabase.getReference("tracks");
         poiRef = mdatabase.getReference("POI");
@@ -212,12 +216,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Button button = (Button) v;
             ((Button) v).setText("Stop");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
+
         }else{
             timerIsRunning = false;
             tracking = false;
             Button button = (Button) v;
             ((Button) v).setText("Start");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            uploadTracks(trackingPoints);
         }
 
 
@@ -235,6 +241,23 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    public String getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        String strDate = calendar.getTime().toString();
+        return strDate;
+
+    }
+
+    public void uploadTracks(List<LatLng> trackingPoints ){
+
+            //Upload the trek the user did
+
+            String id =  getCurrentDate().toString();
+            Trek trek = new Trek(id, trackingPoints);
+            trackRef.child("treks").setValue(trek);
+    }
+
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -276,6 +299,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         int lng = (int) (location.getLongitude());
         latitudeField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));
+
     }
 
     @Override
@@ -473,6 +497,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             mLastLocation = new Location(provider);
         }
 
+
+
+
         @Override
         public void onLocationChanged(Location location) {
             //activate when Start is pushed
@@ -480,6 +507,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 Log.e(TAG, "onLocationChanged: " + location);
                 mLastLocation.set(location);
                 LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
+
                 try {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
                     mMap.animateCamera(yourLocation);

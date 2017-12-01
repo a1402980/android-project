@@ -8,7 +8,7 @@
 
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/poiName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -20,6 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         app:srcCompat="@android:drawable/ic_menu_report_image" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="Coordinates:" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,16 +53,7 @@
             android:text="Choose picture" />
 
 
-
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="Coordinates:" />
 
     <LinearLayout
         android:layout_width="match_parent"

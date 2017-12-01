@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
 import android.graphics.Bitmap;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
@@ -23,6 +24,9 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 
 import java.io.File;
@@ -35,10 +39,12 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     private Button bSelectImage;
     private Button bTakeImage;
     private Button buploadImage;
+    private Button savePoi;
     private StorageReference storageReference;
     //a constant to track the file chooser intent
     private static final int PICK_IMAGE_REQUEST = 2;
     private ImageView imageView;
+    private EditText PoiName;
 
     //a Uri object to store file path
     private Uri filePath;
@@ -58,10 +64,10 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
         bSelectImage = (Button) findViewById(R.id.choosePicture);
         bTakeImage = (Button) findViewById(R.id.takePicture);
-        buploadImage = (Button) findViewById(R.id.uploadPicture);
-
+        savePoi = (Button) findViewById(R.id.savePOI);
         imageView = (ImageView) findViewById(R.id.imageView);
 
+        PoiName = (EditText) findViewById(R.id.poiName);
 
 
 
@@ -147,11 +153,21 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         else if(view== bTakeImage){
             takePhoto();
         }
-        else if (view == buploadImage) {
+
+        else if(view== savePoi){
+
             uploadFile();
+
         }
+    }
+
+    public String getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        String strDate = calendar.getTime().toString();
+        return strDate;
 
     }
+
 
     //this method will upload the file
     private void uploadFile() {
@@ -162,7 +178,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             progressDialog.setTitle("Uploading");
             progressDialog.show();
 
-            StorageReference riversRef = storageReference.child("images/pic.jpg");
+            StorageReference riversRef = storageReference.child( PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
