@@ -220,15 +220,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             ((Button) v).setText("Stop");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
 
-            String trackName = ((EditText) findViewById(R.id.txtTrackName)).getText().toString();
-
-            Track track1 = new Track(trackName, "This is a first track");
-            String trackKey = trackRef.push().getKey();
-
-            Map<String, Object> newTracks = new HashMap<>();
-            newTracks.put( trackKey, track1 );
-            trackRef.updateChildren(newTracks);
-
         }else{
             timerIsRunning = false;
             tracking = false;
@@ -239,6 +230,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             minutes = 0;
             seconds = 0;
             trackingPoints = new ArrayList<LatLng>();
+
         }
 
 
@@ -268,9 +260,19 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             //Upload the trek the user did
 
-            String id =  getCurrentDate().toString();
+
+        String trackName = ((EditText) findViewById(R.id.txtTrackName)).getText().toString();
+
+        Track track1 = new Track(trackName, "This is a first track");
+        String trackKey = trackRef.push().getKey();
+
+        Map<String, Object> newTracks = new HashMap<>();
+        newTracks.put( trackKey, track1 );
+        trackRef.updateChildren(newTracks);
+
+            /*String id =  getCurrentDate().toString();
             Trek trek = new Trek(id, trackingPoints);
-            trackRef.child("treks").setValue(trek);
+            trackRef.child("treks").setValue(trek);*/
     }
 
 
