@@ -2,9 +2,8 @@ package hes_so.android_project_2017;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.Image;
 import android.graphics.Bitmap;
+import android.os.PersistableBundle;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +23,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -89,8 +87,10 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         //show the text data on the page
         TextView longitudeView = (TextView) findViewById(R.id.longitudeText);
         TextView latitudeView = (TextView) findViewById(R.id.latitudeText);
-        latitudeView.setText(latitudeData);
-        longitudeView.setText(longitudeData);
+        if (latitudeData != null && longitudeData != null) {
+            latitudeView.setText(latitudeData);
+            longitudeView.setText(longitudeData);
+        }
 
     }
 
@@ -222,5 +222,29 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     public void cancelOnClick(View v) {
         finish();
         onBackPressed();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString("LONGITUDEDATA", latitudeData);
+        outState.putString("LATITUDDATA",longitudeData);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        latitudeData = (String) savedInstanceState.getString("LONGITUDEDATA");
+        longitudeData = (String) savedInstanceState.getString("LATITUDDATA");
+
+        TextView longitudeView = (TextView) findViewById(R.id.longitudeText);
+        TextView latitudeView = (TextView) findViewById(R.id.latitudeText);
+        if (latitudeData != null && longitudeData != null) {
+            latitudeView.setText(latitudeData);
+            longitudeView.setText(longitudeData);
+        }
+
     }
 }
