@@ -236,6 +236,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             ((Button) v).setText("Start");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
             uploadTracks(trackingPoints);
+            minutes = 0;
+            seconds = 0;
+            trackingPoints = new ArrayList<LatLng>();
         }
 
 
@@ -459,6 +462,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         timerIsRunning = savedInstanceState.getBoolean("ISTIMERRUNNING");
         distanceComplete = savedInstanceState.getFloat("DISTANCE_FLOAT");
         startTimer();
+
+        Button button =  findViewById(R.id.trackButton);
+        if (timerIsRunning) {
+            ((Button) button).setText("Stop");
+            ((Button) button).setBackgroundColor(Color.argb(99, 234, 6, 0));
+        }else
+        {
+            ((Button) button).setText("Start");
+            ((Button) button).setBackgroundColor(Color.argb(99, 173, 234, 0));
+        }
+
     }
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
