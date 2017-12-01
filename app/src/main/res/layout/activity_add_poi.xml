@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="POI Name" />
+        android:hint="POI name" />
 
     <ImageView
         android:id="@+id/imageView"

@@ -13,21 +13,16 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="POI Name" />
+        android:hint="POI name" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="44dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
         app:srcCompat="@android:drawable/ic_menu_report_image" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="Coordinates:" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +48,16 @@
             android:text="Choose picture" />
 
 
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="Coordinates:" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,20 +65,20 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/latitudeText"
             android:layout_width="98dp"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="16.2232" />
+            android:gravity="center"
+            android:text="null" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/longitudeText"
             android:layout_width="124dp"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="93.2223" />
+            android:gravity="center"
+            android:text="null" />
 
 
     </LinearLayout>
@@ -99,6 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="Add description here..."
             android:inputType="textMultiLine" />
 
         <LinearLayout
@@ -115,7 +120,7 @@
                 android:text="Cancel" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/savePOI"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
