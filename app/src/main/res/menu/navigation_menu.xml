@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <group>
+        <item
+            android:icon="@android:drawable/ic_input_add"
+            android:title="Create a track" />
+        <item
+            android:icon="@android:drawable/ic_input_add"
+            android:title="Create a POI" />
+        <item
+            android:icon="@android:drawable/ic_input_add"
+            android:title="Create a POD" />
+        <item
+            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:title="POI/POD list" />
+    </group>
+
+</menu>
