@@ -123,7 +123,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         if (requestCode==0 && resultCode == RESULT_OK){
-            filePath = imageReturnedIntent.getData();
+       //     filePath = imageReturnedIntent.getData();
 
             Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
             imageView.setImageBitmap(bitmap);

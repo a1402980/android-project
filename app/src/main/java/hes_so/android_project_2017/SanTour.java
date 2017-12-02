@@ -227,6 +227,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Button button = (Button) v;
             ((Button) v).setText("Start");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            //When stop button pressed, upload into DB the tracking points and then reset the track
             uploadTracks(trackingPoints);
             minutes = 0;
             seconds = 0;
