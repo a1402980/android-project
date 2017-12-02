@@ -163,6 +163,13 @@
 
     </LinearLayout>
 
+        <Button
+            android:id="@+id/saveTrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="buttonSaveTrackOnClick"
+            android:text="Save Track" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,11 +1,10 @@
 package hes_so.android_project_2017;
 
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.PersistableBundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +51,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
     private String longitudeData;
     private String latitudeData;
-
-    String mCurrentPhotoPath;
 
 
     @Override
@@ -104,7 +101,6 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         startActivityForResult(takePicture, 0);
 
     }
-
 
 
 
@@ -229,6 +225,9 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         outState.putString("LONGITUDEDATA", latitudeData);
         outState.putString("LATITUDDATA",longitudeData);
     }
+
+
+
 
 
     @Override

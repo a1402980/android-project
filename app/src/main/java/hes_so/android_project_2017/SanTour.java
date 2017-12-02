@@ -1,11 +1,14 @@
 package hes_so.android_project_2017;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -50,7 +53,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private boolean tracking;
     private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef, trackPointsRef;
     private Timer t;
-    private Button bAddPoi;
 
     FirebaseDatabase mdatabase = getDatabase();
 
@@ -118,6 +120,43 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         intent.putExtra("longitudeData" ,longitude);
         intent.putExtra("latitudeData" ,latitude);
         startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    public void buttonSaveTrackOnClick(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure you want to save this track?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing but close the dialog
+
+                //Upload into DB the tracking points and then reset the track uplon clicking YES
+                uploadTracks(trackingPoints);
+                minutes = 0;
+                seconds = 0;
+                distanceComplete = 0;
+                trackingPoints = new ArrayList<LatLng>();
+                updateView(null);
+                updateTime();
+
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
@@ -227,14 +266,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Button button = (Button) v;
             ((Button) v).setText("Start");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
-            //When stop button pressed, upload into DB the tracking points and then reset the track
-            uploadTracks(trackingPoints);
-            minutes = 0;
-            seconds = 0;
-            distanceComplete = 0;
-            trackingPoints = new ArrayList<LatLng>();
-            updateView(null);
-            updateTime();
+
         }
 
 
