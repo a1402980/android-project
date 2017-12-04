@@ -6,15 +6,19 @@
 
     <group>
         <item
+            android:id="@+id/createTrack"
             android:icon="@android:drawable/ic_input_add"
             android:title="Create a track" />
         <item
+            android:id="@+id/createPOI"
             android:icon="@android:drawable/ic_input_add"
             android:title="Create a POI" />
         <item
+            android:id="@+id/createPOD"
             android:icon="@android:drawable/ic_input_add"
             android:title="Create a POD" />
         <item
+            android:id="@+id/POIPODlist"
             android:icon="@android:drawable/ic_menu_sort_by_size"
             android:title="POI/POD list" />
     </group>

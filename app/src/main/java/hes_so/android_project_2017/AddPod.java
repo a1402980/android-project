@@ -16,7 +16,6 @@ import android.view.ViewGroup;
  * to handle interaction events.
  * Use the {@link AddPod#newInstance} factory method to
  * create an instance of this fragment.
- *
  */
 public class AddPod extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +28,10 @@ public class AddPod extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    public AddPod() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -46,9 +49,6 @@ public class AddPod extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-    public AddPod() {
-        // Required empty public constructor
     }
 
     @Override
@@ -77,12 +77,12 @@ public class AddPod extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
