@@ -1,5 +1,7 @@
 package hes_so.android_project_2017;
 
+import android.net.Uri;
+
 /**
  * Created by Lionel on 20/11/2017.
  */
@@ -9,25 +11,25 @@ public class POI {
     private int track_Id;
     private String name;
     private String description;
-    private String filePath;
+    private Uri filePath;
 
 
     public POI(){
 
     }
 
-    public POI(int track_Id, String name, String description, String filePath){
+    public POI(int track_Id, String name, String description, Uri filePath){
         this.track_Id = track_Id;
         this.name = name;
         this.description = description;
         this.filePath = filePath;
     }
 
-    public String getFilePath() {
+    public Uri getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
+    public void setFilePath(Uri filePath) {
         this.filePath = filePath;
     }
 

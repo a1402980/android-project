@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -123,6 +124,36 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public void buttonSaveTrackOnClick(View v){
+
+        Track track = new Track("test", "test");
+        track.addPoint(new LatLng(12, 11));
+        track.addPoint(new LatLng(13, 11));
+        track.addPoint(new LatLng(14, 11));
+        track.addPoint(new LatLng(12, 12));
+        track.addPoint(new LatLng(12, 13));
+        track.addPoint(new LatLng(12, 23));
+
+        LocalData.setTrack(track);
+
+        POD pod1 = new POD(11, "test", "test", null);
+        Difficulty dif1 = new Difficulty(1, "Rocks");
+        Difficulty dif2 = new Difficulty(2, "Something");
+        pod1.addDifficulty(dif1);
+        pod1.addDifficulty(dif2);
+
+        POD pod2 = new POD(2, "test2", "test2", null);
+        pod2.addDifficulty(dif1);
+        pod2.addDifficulty(dif2);
+
+        LocalData.addPOD(pod1);
+        LocalData.addPOD(pod2);
+
+        LocalData.addPOI(new POI(12, "test", "test", null));
+        LocalData.addPOI(new POI(236, "asd", "asfdsd", null));
+
+        LocalData.saveDataFirebase();
+
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Confirm");
@@ -156,7 +187,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         });
 
         AlertDialog alert = builder.create();
-        alert.show();
+        alert.show();*/
     }
 
 

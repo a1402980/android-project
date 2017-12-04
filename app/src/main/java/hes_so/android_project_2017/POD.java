@@ -1,6 +1,9 @@
 package hes_so.android_project_2017;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -12,25 +15,27 @@ public class POD {
     private int track_Id;
     private String name;
     private String description;
-    private List<Difiiculties> difficultiesList;
-    private String filePath;
+    private ArrayList<Difficulty> difficultiesList;
+    private Uri filePath;
 
     public POD(){
-        difficultiesList = new ArrayList<Difiiculties>();
+
+        difficultiesList = new ArrayList<Difficulty>();
     }
 
-    public POD(int track_Id, String name, String description, String filePath){
+    public POD(int track_Id, String name, String description, Uri filePath){
         this.track_Id = track_Id;
         this.name = name;
         this.description = description;
         this.filePath = filePath;
+        difficultiesList = new ArrayList<Difficulty>();
     }
 
-    public String getFilePath() {
+    public Uri getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
+    public void setFilePath(Uri filePath) {
         this.filePath = filePath;
     }
 
@@ -66,42 +71,14 @@ public class POD {
         this.description = description;
     }
 
-    public void addDifficulty(Difiiculties d)
+    public void addDifficulty(Difficulty d)
     {
         difficultiesList.add(d);
     }
 
-    public List<Difiiculties> getDifficultiesList() {
+    public ArrayList<Difficulty> getDifficultiesList() {
         return difficultiesList;
     }
 
-    public class Difiiculties
-    {
-        private int level;
-        private String id;
-
-        public Difiiculties(int level, String id) {
-            this.level = level;
-            this.id = id;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public void setLevel(int level) {
-            if (level<=10 && level>= 0) {
-                this.level = level;
-            }
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-    }
 }
 
