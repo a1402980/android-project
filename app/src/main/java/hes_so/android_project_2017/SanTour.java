@@ -50,12 +50,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private GoogleMap mMap;
     private TextView latitudeField;
     private TextView longitudeField;
-    private List<LatLng> trackingPoints;
     private boolean tracking;
-    private DatabaseReference trackRef, poiRef, podRef, gpsdataRef, podcategRef, trackPointsRef;
     private Timer t;
-
-    FirebaseDatabase mdatabase = getDatabase();
 
 
 
@@ -95,15 +91,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         setContentView(R.layout.activity_san_tour);
 
         setTitle("SanTour");
-
-
-        trackRef = mdatabase.getReference("tracks");
-        poiRef = mdatabase.getReference("POI");
-        podRef = mdatabase.getReference("POD");
-        gpsdataRef = mdatabase.getReference("gpsData");
-        podcategRef = mdatabase.getReference("PODcategories");
-
-
         latitudeField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
         startLocationListener();
@@ -125,7 +112,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     public void buttonSaveTrackOnClick(View v){
 
-        Track track = new Track("test", "test");
+        /*Track track = new Track("test", "test");
         track.addPoint(new LatLng(12, 11));
         track.addPoint(new LatLng(13, 11));
         track.addPoint(new LatLng(14, 11));
@@ -149,8 +136,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         LocalData.addPOD(pod2);
 
         LocalData.addPOI(new POI(12, "test", "test", null));
-        LocalData.addPOI(new POI(236, "asd", "asfdsd", null));
+        LocalData.addPOI(new POI(236, "asd", "asfdsd", null)); */
 
+        LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
         LocalData.saveDataFirebase();
 
         /*
@@ -323,7 +311,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     }
 
-    public void uploadTracks(List<LatLng> trackingPoints ){
+    /*public void uploadTracks(List<LatLng> trackingPoints ){
 
             //Upload the trek the user did
 
@@ -347,7 +335,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
         trackPointsRef.updateChildren(newTrackPoints);
-    }
+    }*/
 
 
     @Override
@@ -362,7 +350,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
 
-            if (trackingPoints != null) {
+            if (LocalData.getTrack().getTrackingPoints() != null) {
                 Polyline route = mMap.addPolyline(new PolylineOptions()
                         .width(12)
                         .color(Color.BLUE)
@@ -370,7 +358,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                         .zIndex(1));
 
 
-                route.setPoints(trackingPoints);
+                route.setPoints(LocalData.getTrack().getTrackingPoints());
             }
 
         } else {
@@ -444,10 +432,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         if (loc != null) {
             float distance;
-            if (trackingPoints != null) {
-                if (trackingPoints.size()>1)
+            if (LocalData.getTrack().getTrackingPoints() != null) {
+                if (LocalData.getTrack().getTrackingPoints().size()>1)
                 {
-                    distance = distFrom(loc.getLatitude(), loc.getLongitude(), trackingPoints.get(trackingPoints.size() - 1).latitude, trackingPoints.get(trackingPoints.size() - 1).longitude);
+                    distance = distFrom(loc.getLatitude(), loc.getLongitude(), LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).latitude, LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).longitude);
                 }else {
                     distance = 15;
                 }
@@ -462,10 +450,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 //turning location into LatLng
                 LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
-                if (trackingPoints == null) {
-                    trackingPoints = new ArrayList<>();
+                if (LocalData.getTrack().getTrackingPoints() == null) {
+                    LocalData.getTrack().setTrackingPoints(new ArrayList<LatLng>());
                 }
-                trackingPoints.add(coordinates);
+                LocalData.getTrack().getTrackingPoints().add(coordinates);
 
                 if (mMap != null) {
                     Polyline route = mMap.addPolyline(new PolylineOptions()
@@ -475,15 +463,15 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                             .zIndex(1));
 
 
-                    route.setPoints(trackingPoints);
+                    route.setPoints(LocalData.getTrack().getTrackingPoints());
                 }
 
             }
         }
-        if (loc == null && trackingPoints != null)
+        if (loc == null && LocalData.getTrack().getTrackingPoints() != null)
         {
-            if(trackingPoints.size()>0) {
-                LatLng last = trackingPoints.get(trackingPoints.size() - 1);
+            if(LocalData.getTrack().getTrackingPoints().size()>0) {
+                LatLng last = LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1);
                 longitudeField.setText(String.format("%.4f", last.longitude));
                 latitudeField.setText(String.format("%.4f", last.latitude));
 
@@ -495,7 +483,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                             .zIndex(1));
 
 
-                    route.setPoints(trackingPoints);
+                    route.setPoints(LocalData.getTrack().getTrackingPoints());
                 }
 
             }
@@ -522,13 +510,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        trackingPoints = new ArrayList<LatLng>();
+        LocalData.getTrack().setTrackingPoints(new ArrayList<LatLng>());
         double[] listLatitute = savedInstanceState.getDoubleArray("ARRAY_LATITUDE");
         double[] listLongitude = savedInstanceState.getDoubleArray("ARRAY_LONGITUDE");
         for (int i = 0; i < listLatitute.length; i++)
         {
             LatLng temp = new LatLng(listLatitute[i], listLongitude[i]);
-            trackingPoints.add(temp);
+            LocalData.getTrack().getTrackingPoints().add(temp);
         }
         minutes = savedInstanceState.getInt("MINUTES_INT");
         seconds = savedInstanceState.getInt("SECONDES_INT");
@@ -557,13 +545,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         double[] listLatitute;
         double[] listLongitude;
 
-        if (trackingPoints != null) {
-             listLatitute = new double[trackingPoints.size()];
-             listLongitude = new double[trackingPoints.size()];
+        if (LocalData.getTrack().getTrackingPoints() != null) {
+             listLatitute = new double[LocalData.getTrack().getTrackingPoints().size()];
+             listLongitude = new double[LocalData.getTrack().getTrackingPoints().size()];
 
-            for (int i = 0; i < trackingPoints.size(); i++) {
-                listLatitute[i] = trackingPoints.get(i).latitude;
-                listLongitude[i] = trackingPoints.get(i).longitude;
+            for (int i = 0; i < LocalData.getTrack().getTrackingPoints().size(); i++) {
+                listLatitute[i] = LocalData.getTrack().getTrackingPoints().get(i).latitude;
+                listLongitude[i] = LocalData.getTrack().getTrackingPoints().get(i).longitude;
             }
         }
         else

@@ -5,6 +5,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,8 @@ public class LocalData {
     }
 
     public static Track getTrack() {
+        if (track == null)
+            track = new Track();
         return track;
     }
 
@@ -62,17 +66,22 @@ public class LocalData {
         FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
         trackRef = mdatabase.getReference("tracks");
 
-        Track track1 = new Track(track.getName(), "");
+
         String trackKey = trackRef.push().getKey();
 
         SaveClass sc = new SaveClass(podList, poiList, track);
 
         Map<String, Object> childs = new HashMap<>();
 
+        if (sc.getTrack().getName().equals(""))
+        {
+
+            sc.getTrack().setName("Track"+ Calendar.getInstance().getTime());
+        }
         childs.put(sc.getTrack().getName(), sc);
 
         trackRef.updateChildren(childs);
-        
+
         //Add Save Pictures here later
     }
 
@@ -84,20 +93,30 @@ public class LocalData {
         private Track track;
 
         public SaveClass(List<POD> pod, List<POI> poi, Track track) {
+            if (pod == null)
+                pod = new ArrayList<>();
+            if (poi == null)
+                poi = new ArrayList<>();
             this.pod = pod;
             this.poi = poi;
             this.track = track;
         }
 
         public Track getTrack() {
+            if (track == null)
+                track = new Track();
             return track;
         }
 
         public List<POD> getPod() {
+            if(pod == null)
+                pod = new ArrayList<>();
             return pod;
         }
 
         public List<POI> getPoi() {
+            if (poi == null)
+                pod = new ArrayList<>();
             return poi;
         }
     }

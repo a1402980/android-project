@@ -77,5 +77,9 @@ public class Track {
     public List<LatLng> getTrackingPoints() {
         return trackingPoints;
     }
+
+    public void setTrackingPoints(List<LatLng> trackingPoints) {
+        this.trackingPoints = trackingPoints;
+    }
 }
 
