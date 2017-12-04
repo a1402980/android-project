@@ -1,38 +1,24 @@
 package hes_so.android_project_2017;
 
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.PersistableBundle;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-
-
-import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-
 
 public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
@@ -51,6 +37,9 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
     private String longitudeData;
     private String latitudeData;
+
+    private float longitudeDataInt;
+    private float latitudeDataInt;
 
 
     @Override
@@ -80,6 +69,8 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             } else {
                 longitudeData = extras.getString("longitudeData");
                 latitudeData = extras.getString("latitudeData");
+                longitudeDataInt = extras.getFloat("longitudeData");
+                latitudeDataInt = extras.getFloat("latitudeData");
             }
         } else {
             latitudeData = (String) savedInstanceState.getSerializable("longitudeData");
@@ -152,7 +143,15 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         }
 
         else if(view== savePoi){
-            uploadFile();
+            POI poi = new POI();
+            poi.setName(((TextView) findViewById(R.id.poiName)).getText().toString());
+            poi.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
+
+            poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
+            poi.setFilePath(filePath);
+            LocalData.addPOI(poi);
+            finish();
+            onBackPressed();
         }
     }
 
@@ -163,7 +162,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
 
     }
 
-
+/* Move to LocalData
     //this method will upload the file
     private void uploadFile() {
         //if there is a file to upload
@@ -213,6 +212,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             //you can display an error toast
         }
     }
+    */
 
     public void cancelOnClick(View v) {
         finish();

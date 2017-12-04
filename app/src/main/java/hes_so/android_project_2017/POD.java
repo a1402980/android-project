@@ -3,8 +3,6 @@ package hes_so.android_project_2017;
 import android.net.Uri;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Lionel on 20/11/2017.

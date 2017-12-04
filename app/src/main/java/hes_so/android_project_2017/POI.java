@@ -2,6 +2,8 @@ package hes_so.android_project_2017;
 
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Lionel on 20/11/2017.
  */
@@ -12,13 +14,14 @@ public class POI {
     private String name;
     private String description;
     private Uri filePath;
+    private LatLng latLng;
 
 
     public POI(){
 
     }
 
-    public POI(int track_Id, String name, String description, Uri filePath){
+    public POI(int track_Id, String name, String description, Uri filePath, LatLng latLng){
         this.track_Id = track_Id;
         this.name = name;
         this.description = description;
@@ -63,6 +66,14 @@ public class POI {
 
     public void setDescription(String description){
         this.description = description;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
     }
 }
 

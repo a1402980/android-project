@@ -1,15 +1,11 @@
 package hes_so.android_project_2017;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -18,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
@@ -30,15 +25,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -112,70 +103,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     public void buttonSaveTrackOnClick(View v){
 
-        /*Track track = new Track("test", "test");
-        track.addPoint(new LatLng(12, 11));
-        track.addPoint(new LatLng(13, 11));
-        track.addPoint(new LatLng(14, 11));
-        track.addPoint(new LatLng(12, 12));
-        track.addPoint(new LatLng(12, 13));
-        track.addPoint(new LatLng(12, 23));
-
-        LocalData.setTrack(track);
-
-        POD pod1 = new POD(11, "test", "test", null);
-        Difficulty dif1 = new Difficulty(1, "Rocks");
-        Difficulty dif2 = new Difficulty(2, "Something");
-        pod1.addDifficulty(dif1);
-        pod1.addDifficulty(dif2);
-
-        POD pod2 = new POD(2, "test2", "test2", null);
-        pod2.addDifficulty(dif1);
-        pod2.addDifficulty(dif2);
-
-        LocalData.addPOD(pod1);
-        LocalData.addPOD(pod2);
-
-        LocalData.addPOI(new POI(12, "test", "test", null));
-        LocalData.addPOI(new POI(236, "asd", "asfdsd", null)); */
-
         LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
+        LocalData.getTrack().setKmLength(distanceComplete/1000);
+        LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
         LocalData.saveDataFirebase();
-
-        /*
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Confirm");
-        builder.setMessage("Are you sure you want to save this track?");
-
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing but close the dialog
-
-                //Upload into DB the tracking points and then reset the track uplon clicking YES
-                uploadTracks(trackingPoints);
-                minutes = 0;
-                seconds = 0;
-                distanceComplete = 0;
-                trackingPoints = new ArrayList<LatLng>();
-                updateView(null);
-                updateTime();
-
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();*/
     }
 
 
