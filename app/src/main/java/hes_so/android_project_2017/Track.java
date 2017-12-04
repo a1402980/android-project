@@ -1,5 +1,10 @@
 package hes_so.android_project_2017;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Lionel on 20/11/2017.
  */
@@ -11,14 +16,17 @@ public class Track {
     private String description;
     private String timeDuration;
     private float kmLength;
+    private List<LatLng> trackingPoints;
 
     public Track(){
+        trackingPoints = new ArrayList<LatLng>();
 
     }
 
     public Track(String name, String description){
         this.name = name;
         this.description = description;
+        trackingPoints = new ArrayList<LatLng>();
     }
 
     public int getId(){
@@ -59,6 +67,19 @@ public class Track {
 
     public void setKmLength(float kmLength){
         this.kmLength = kmLength;
+    }
+
+    public void addPoint(LatLng location)
+    {
+        trackingPoints.add(location);
+    }
+
+    public List<LatLng> getTrackingPoints() {
+        return trackingPoints;
+    }
+
+    public void setTrackingPoints(List<LatLng> trackingPoints) {
+        this.trackingPoints = trackingPoints;
     }
 }
 
