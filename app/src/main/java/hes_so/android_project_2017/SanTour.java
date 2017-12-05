@@ -1,6 +1,8 @@
 package hes_so.android_project_2017;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -45,7 +47,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private Timer t;
 
 
-
     // some transient state for the activity instance
     private String mGameState;
 
@@ -78,7 +79,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
 
 
-
         setContentView(R.layout.activity_san_tour);
 
         setTitle("SanTour");
@@ -96,18 +96,44 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         Intent intent = new Intent(SanTour.this, AddPoi.class);
         String longitude = longitudeField.getText().toString();
         String latitude = latitudeField.getText().toString();
-        intent.putExtra("longitudeData" ,longitude);
-        intent.putExtra("latitudeData" ,latitude);
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
         startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
 
-    public void buttonSaveTrackOnClick(View v){
+    public void buttonSaveTrackOnClick(View v) {
 
-        LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
-        LocalData.getTrack().setKmLength(distanceComplete/1000);
-        LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
-        LocalData.saveDataFirebase();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure you want to save this track?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
+                LocalData.getTrack().setKmLength(distanceComplete / 1000);
+                LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
+                LocalData.saveDataFirebase();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
+
+
+
 
 
     private int seconds = 0;
