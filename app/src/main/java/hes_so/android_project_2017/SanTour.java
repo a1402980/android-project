@@ -307,8 +307,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         if (tracking == true) {
             timerIsRunning = false;
             tracking = false;
-            Button button = (Button) v;
-            ((Button) v).setText("Resume");
+    
         }
 
         
