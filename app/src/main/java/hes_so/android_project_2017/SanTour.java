@@ -296,6 +296,19 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         mapFragment.getMapAsync(this);
     }
 
+
+    public void buttonPauseOnClick(View v){
+        if (tracking == true) {
+            timerIsRunning = false;
+            tracking = false;
+            Button button = (Button) v;
+            ((Button) v).setText("Resume");
+        }
+
+        
+    }
+
+
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
@@ -304,6 +317,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             ((Button) v).setText("Stop");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
 
+            Button pauseButton = ((Button) findViewById(R.id.pauseTracking));
+            pauseButton.setVisibility(View.VISIBLE);
+
         }else{
             timerIsRunning = false;
             tracking = false;
@@ -311,6 +327,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             ((Button) v).setText("Start");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
 
+            Button pauseButton = ((Button) findViewById(R.id.pauseTracking));
+            pauseButton.setVisibility(View.INVISIBLE);
         }
 
 
