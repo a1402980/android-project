@@ -99,12 +99,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startTimer();
 
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
-        //drawerSetup(nvDrawer);
+        drawerSetup(nvDrawer);
 
     }
 
 
-   /*public void selectItemDrawer(MenuItem menuItem){
+   public void selectItemDrawer(MenuItem menuItem){
         Fragment myFragment = null;
         //Class fragmentClass;
 
@@ -118,8 +118,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 break;
 
             case R.id.createPOI:
-                //myFragment = new createPOI(); this is not working yet...
-                //fragmentClass = AddPoi.class;
+                timerIsRunning = false;
+                Intent intent = new Intent(SanTour.this, AddPoi.class);
+                String longitude = longitudeField.getText().toString();
+                String latitude = latitudeField.getText().toString();
+                intent.putExtra("longitudeData", longitude);
+                intent.putExtra("latitudeData", latitude);
+                startActivityForResult(intent, PICK_CONTACT_REQUEST);
                 break;
 
             default:
@@ -135,6 +140,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
 //        try{
 //            myFragment = (Fragment) fragmentClass.newInstance();
 //        }catch (Exception e){
@@ -155,7 +161,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             }
         });
     }
-    */
+
 
     static final int PICK_CONTACT_REQUEST = 1;
 
