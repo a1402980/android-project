@@ -1,6 +1,8 @@
 package hes_so.android_project_2017;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,10 +12,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -45,6 +54,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView longitudeField;
     private boolean tracking;
     private Timer t;
+    private DrawerLayout dl;
 
 
     // some transient state for the activity instance
@@ -77,6 +87,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         if (savedInstanceState != null) {
             mGameState = savedInstanceState.getString("GAMESTATEKEY");
         }
+        dl = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
         setContentView(R.layout.activity_san_tour);
@@ -87,7 +98,64 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startLocationListener();
         startTimer();
 
+        NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
+        //drawerSetup(nvDrawer);
+
     }
+
+
+   /*public void selectItemDrawer(MenuItem menuItem){
+        Fragment myFragment = null;
+        //Class fragmentClass;
+
+        switch (menuItem.getItemId()){
+            case R.id.createTrack:
+                //fragmentClass = SanTour.class;
+                break;
+
+            case R.id.createPOD:
+                //fragmentClass = AddPod.class;
+                break;
+
+            case R.id.createPOI:
+                //myFragment = new createPOI(); this is not working yet...
+                //fragmentClass = AddPoi.class;
+                break;
+
+            default:
+                //fragmentClass = SanTour.class;
+        }
+
+        if (myFragment != null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+
+            ft.replace(R.id.screen_area, myFragment);
+            ft.commit();
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+//        try{
+//            myFragment = (Fragment) fragmentClass.newInstance();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.contentWrapper,myFragment).commit();
+//        menuItem.setCheckable(true);
+//        setTitle(menuItem.getTitle());
+//        dl.closeDrawers();
+    }
+    private void drawerSetup(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectItemDrawer(item);
+                return true;
+            }
+        });
+    }
+    */
 
     static final int PICK_CONTACT_REQUEST = 1;
 
