@@ -1,17 +1,20 @@
 package hes_so.android_project_2017;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.net.Uri;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
-import android.support.annotation.NonNull;
-import android.util.Log;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,7 +82,7 @@ public class LocalData {
 
         SaveClass sc = new SaveClass(podList, poiList, track);
 
-        Map<String, Object> childs = new HashMap<>();
+        Map<String, Object> childs = new HashMap<String, Object>();
 
         if (sc.getTrack().getName().equals(""))
         {
@@ -88,7 +91,12 @@ public class LocalData {
         }
         childs.put(sc.getTrack().getName(), sc);
 
-        trackRef.updateChildren(childs);
+        try {
+            trackRef.updateChildren(childs);
+        }catch (Exception e)
+        {
+            Log.d("ERROR", e.getMessage());
+        }
 
         if (podList != null)
             for (POD pod: podList) {
@@ -106,35 +114,47 @@ public class LocalData {
 
 
     private static void savePicture (Uri fileUri, String trackName, String poName) {
+        /*StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            try {
+                UploadTask uploadTask = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg").putFile(fileUri);
+            } catch (Exception e) {
+                Log.d("ERROR", e.getMessage());
+            }*/
+
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        if (fileUri != null) {
-            StorageReference riversRef = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg");
+        StorageReference riversRef = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg");
+        riversRef.putFile(fileUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //if the upload is successfull
+                        //hiding the progress dialog
 
-            Uri file = fileUri;
-            Log.d("file", file.getPath());
+                        //and displaying a success toast
+                        //Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        //if the upload is not successfull
+                        //hiding the progress dialog
 
-            UploadTask uploadTask = riversRef.putFile(file);
+                        //and displaying error message
+                        //Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        //calculating progress percentage
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-// Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Log.d("uploadFail", "" + exception);
+                        //displaying percentage in progress dialog
+                    }
+                });
 
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    //sendNotification("upload backup", 1);
 
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                    Log.d("downloadUrl", "" + downloadUrl);
-                }
-            });
-        }
     }
 
     public static String getCurrentDate() {
