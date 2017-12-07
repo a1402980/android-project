@@ -87,7 +87,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         if (savedInstanceState != null) {
             mGameState = savedInstanceState.getString("GAMESTATEKEY");
         }
-        dl = (DrawerLayout) findViewById(R.id.drawer_layout);
+
 
 
         setContentView(R.layout.activity_san_tour);
@@ -107,50 +107,26 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
    public void selectItemDrawer(MenuItem menuItem){
         Fragment myFragment = null;
         //Class fragmentClass;
-
+       View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
                 //fragmentClass = SanTour.class;
                 break;
 
             case R.id.createPOD:
-                //fragmentClass = AddPod.class;
+                buttonAddPODOnClick(v);
                 break;
 
             case R.id.createPOI:
-                timerIsRunning = false;
-                Intent intent = new Intent(SanTour.this, AddPoi.class);
-                String longitude = longitudeField.getText().toString();
-                String latitude = latitudeField.getText().toString();
-                intent.putExtra("longitudeData", longitude);
-                intent.putExtra("latitudeData", latitude);
-                startActivityForResult(intent, PICK_CONTACT_REQUEST);
+                buttonAddPOIOnClick(v);
                 break;
 
             default:
                 //fragmentClass = SanTour.class;
         }
-
-        if (myFragment != null){
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.screen_area, myFragment);
-            ft.commit();
-        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-//        try{
-//            myFragment = (Fragment) fragmentClass.newInstance();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.contentWrapper,myFragment).commit();
-//        menuItem.setCheckable(true);
-//        setTitle(menuItem.getTitle());
-//        dl.closeDrawers();
     }
     private void drawerSetup(NavigationView navigationView){
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -168,6 +144,16 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonAddPOIOnClick(View v) {
         timerIsRunning = false;
         Intent intent = new Intent(SanTour.this, AddPoi.class);
+        String longitude = longitudeField.getText().toString();
+        String latitude = latitudeField.getText().toString();
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    public void buttonAddPODOnClick(View v) {
+        timerIsRunning = false;
+        Intent intent = new Intent(SanTour.this, AddPod.class);
         String longitude = longitudeField.getText().toString();
         String latitude = latitudeField.getText().toString();
         intent.putExtra("longitudeData", longitude);
@@ -350,7 +336,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
     }
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     public String getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
@@ -385,6 +370,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         trackPointsRef.updateChildren(newTrackPoints);
     }*/
 
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     public void onMapReady(GoogleMap map) {
