@@ -15,6 +15,7 @@ public class POI {
     private String name;
     private String description;
     private Uri filePath;
+    private String image64;
     private LatLng latLng;
 
 
@@ -36,6 +37,15 @@ public class POI {
 
     public void setFilePath(Uri filePath) {
         this.filePath = filePath;
+    }
+
+
+    public String getImage64() {
+        return image64;
+    }
+
+    public void setImage64(String image64) {
+        this.image64 = image64;
     }
 
     public int getId(){

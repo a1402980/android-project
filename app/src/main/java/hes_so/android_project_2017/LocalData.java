@@ -100,26 +100,26 @@ public class LocalData {
 
         if (podList != null)
             for (POD pod: podList) {
-                if (pod.getFilePath() != null)
-                    savePicture(pod.getFilePath(), sc.getTrack().getName(), pod.getName());
+               // if (pod.getFilePath() != null)
+                 //   savePicture(pod.getFilePath(), sc.getTrack().getName(), pod.getName());
             }
 
         if (poiList != null)
             for (POI poi: poiList) {
-                if (poi.getFilePath() != null)
-                    savePicture(poi.getFilePath(), sc.getTrack().getName(), poi.getName());
+                    savePicture(poi.getImage64(), sc.getTrack().getName(), poi.getName());
             }
         //Add Save Pictures here later
     }
 
 
-    private static void savePicture (Uri fileUri, String trackName, String poName) {
+    private static void savePicture (String file64, String trackName, String poName) {
+        Log.d("Image", file64);
         /*StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             try {
                 UploadTask uploadTask = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg").putFile(fileUri);
             } catch (Exception e) {
                 Log.d("ERROR", e.getMessage());
-            }*/
+            }
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference riversRef = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg");
@@ -154,7 +154,7 @@ public class LocalData {
                     }
                 });
 
-
+*/
     }
 
     public static String getCurrentDate() {
