@@ -3,6 +3,7 @@ package hes_so.android_project_2017;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.Exclude;
 
 /**
  * Created by Lionel on 20/11/2017.
@@ -28,6 +29,7 @@ public class POI {
         this.filePath = filePath;
     }
 
+    @Exclude
     public Uri getFilePath() {
         return filePath;
     }

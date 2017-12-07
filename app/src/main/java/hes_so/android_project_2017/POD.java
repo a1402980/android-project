@@ -2,6 +2,8 @@ package hes_so.android_project_2017;
 
 import android.net.Uri;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 
 /**
@@ -29,6 +31,7 @@ public class POD {
         difficultiesList = new ArrayList<Difficulty>();
     }
 
+    @Exclude
     public Uri getFilePath() {
         return filePath;
     }
