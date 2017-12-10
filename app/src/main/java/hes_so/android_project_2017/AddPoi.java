@@ -45,6 +45,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
     private float latitudeDataInt;
 
     private String encodedImage;
+    private byte[] imageByte;
 
 
     @Override
@@ -129,6 +130,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
             byte[] bytesForImage = baos.toByteArray();
+            imageByte = bytesForImage;
             encodedImage = Base64.encodeToString(bytesForImage, Base64.DEFAULT);
 
         }
@@ -143,6 +145,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
                 byte[] bytesForImage = baos.toByteArray();
+                imageByte = bytesForImage;
                 encodedImage = Base64.encodeToString(bytesForImage, Base64.DEFAULT);
 
             } catch (IOException e) {
@@ -168,6 +171,7 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
             poi.setName(((TextView) findViewById(R.id.poiName)).getText().toString());
             poi.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
             poi.setImage64(encodedImage);
+            poi.setByteArrayFromImage(imageByte);
             poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
             LocalData.addPOI(poi);
             finish();

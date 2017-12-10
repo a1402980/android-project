@@ -17,7 +17,7 @@ public class POI {
     private Uri filePath;
     private String image64;
     private LatLng latLng;
-
+    private byte[] byteArrayFromImage;
 
     public POI(){
 
@@ -28,6 +28,15 @@ public class POI {
         this.name = name;
         this.description = description;
         this.filePath = filePath;
+    }
+
+    @Exclude
+    public byte[] getByteArrayFromImage() {
+        return byteArrayFromImage;
+    }
+
+    public void setByteArrayFromImage(byte[] byteArrayFromImage) {
+        this.byteArrayFromImage = byteArrayFromImage;
     }
 
     @Exclude

@@ -2,11 +2,14 @@ package hes_so.android_project_2017;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -106,14 +109,38 @@ public class LocalData {
 
         if (poiList != null)
             for (POI poi: poiList) {
-                    savePicture(poi.getImage64(), sc.getTrack().getName(), poi.getName());
+                    savePicture(poi.getByteArrayFromImage(), sc.getTrack().getName(), poi.getName());
             }
         //Add Save Pictures here later
     }
 
 
-    private static void savePicture (String file64, String trackName, String poName) {
-        Log.d("Image", file64);
+    private static void savePicture (byte[] byteFromImage, String trackName, String poName) {
+        //Log.d("Image", file64);
+
+        //Bitmap decodedByte = BitmapFactory.decodeByteArray(byteFromImage, 0, byteFromImage.length);
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
+
+
+        UploadTask uploadTask =  storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg").putBytes(byteFromImage);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                //sendMsg("" + downloadUrl, 2);
+                Log.d("downloadUrl-->", "" + downloadUrl);
+            }
+        });
+
+
         /*StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             try {
                 UploadTask uploadTask = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg").putFile(fileUri);
