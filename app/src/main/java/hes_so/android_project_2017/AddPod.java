@@ -1,6 +1,9 @@
 package hes_so.android_project_2017;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.PersistableBundle;
@@ -17,6 +20,8 @@ import android.widget.ImageView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
 
@@ -132,6 +137,17 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
 
 
+    public void onAddDifficultyClick(View view) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddPod.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
+
+        Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
+
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
+    }
+
     @Override
     public void onClick(View view) {
         //if the clicked button is choose
@@ -161,6 +177,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         return strDate;
 
     }
+
 
 /* Move to LocalData
     //this method will upload the file
