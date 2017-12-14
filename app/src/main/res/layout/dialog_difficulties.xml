@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/podCategLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView4"
@@ -20,25 +24,20 @@
             android:text="Set difficulties:"
             android:textSize="25dp" />
 
-        <CheckBox
-            android:id="@+id/checkBox2"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Danger danger" />
+            android:layout_height="wrap_content">
 
-
-        <SeekBar
-            android:id="@+id/seekBar2"
-            android:layout_margin="5dp"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="10"
-            android:progress="0" />
+            <LinearLayout
+                android:id="@+id/PODcategLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
@@ -59,9 +58,5 @@
 
 
         </LinearLayout>
-
-
-
     </LinearLayout>
-
 </android.support.constraint.ConstraintLayout>
