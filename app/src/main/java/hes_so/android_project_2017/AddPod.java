@@ -165,6 +165,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
                     CheckBox cb = new CheckBox(getApplicationContext());
+                    Log.e("POD categories: ", categ.getName());
                     cb.setText(categ.getName());
                     layout.addView(cb);
                 }
@@ -186,6 +187,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }*/
 
         Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
+        mBuilder.setView(mView);
         AlertDialog dialog = mBuilder.create();
         dialog.show();
     }
