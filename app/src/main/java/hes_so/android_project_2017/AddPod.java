@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.PersistableBundle;
+import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -18,12 +21,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
+import java.util.List;
 
 public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
@@ -138,12 +147,45 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
 
     public void onAddDifficultyClick(View view) {
+
+        FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
+        DatabaseReference podCategRef;
+
+        podCategRef = mdatabase.getReference("PODcategory");
+
+        final List<PODcategory> podCategs = new ArrayList<PODcategory>();
+
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddPod.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
+        final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.podCategLayout);
+
+        podCategRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
+                    PODcategory categ = podCategSnap.getValue(PODcategory.class);
+                    CheckBox cb = new CheckBox(getApplicationContext());
+                    cb.setText(categ.getName());
+                    layout.addView(cb);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        /*for(PODcategory podCateg : podCategs){
+            Log.e("POD categories: ", podCategs.get(1).getName());
+            CheckBox cb = new CheckBox(getApplicationContext());
+            cb.setText(podCateg.getName());
+            //layout.addView(cb);
+        }*/
 
         Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
-
-        mBuilder.setView(mView);
         AlertDialog dialog = mBuilder.create();
         dialog.show();
     }
