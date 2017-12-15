@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,7 @@ public class ListView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTitle("List View");
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_list_view);
         mListView = (android.widget.ListView) findViewById(R.id.listview);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
