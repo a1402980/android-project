@@ -185,6 +185,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                     cb.setTag("cb" + i);
                     cb.setText(categ.getName());
                     cb.setTextColor(Color.BLACK);
+                    cb.setPadding(0,40,0,40);
                     layout.addView(cb);
 
                     DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
