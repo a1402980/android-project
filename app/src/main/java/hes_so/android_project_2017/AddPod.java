@@ -162,23 +162,30 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
         layout.setOrientation(LinearLayout.VERTICAL);
+
         podCategRef.addValueEventListener(new ValueEventListener() {
+            int i = 0;
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
 
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
                     CheckBox cb = new CheckBox(getApplicationContext());
+                    cb.setId(i);
                     cb.setText(categ.getName());
                     cb.setTextColor(Color.BLACK);
                     layout.addView(cb);
 
-                    SeekBar sb = new SeekBar(getApplicationContext());
-                    sb.setMax(10);
-                    sb.setProgress(0);
+                    SeekBar seek = new SeekBar(getApplicationContext());
+                    seek.setId(i);
+                    seek.setMax(10);
+                    seek.setProgress(0);
+                    seek.setVisibility(View.GONE);
 
-                    layout.addView(sb);
+                    layout.addView(seek);
                     //podCategs.add(podCategs.size(),categ);
+                    i++;
                 }
             }
 
@@ -226,6 +233,10 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             finish();
             onBackPressed();
         }
+    }
+
+    public void onDifficultyCheckboxClick(View view){
+
     }
 
     public String getCurrentDate() {
