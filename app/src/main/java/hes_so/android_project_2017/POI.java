@@ -9,92 +9,24 @@ import com.google.firebase.database.Exclude;
  * Created by Lionel on 20/11/2017.
  */
 
-public class POI {
-    private int id;
-    private int track_Id;
-    private String name;
-    private String description;
-    private Uri filePath;
+public class POI  extends PO{
+
     private String image64;
     private LatLng latLng;
-    private byte[] byteArrayFromImage;
+
 
     public POI(){
-
+    super();
     }
 
     public POI(int track_Id, String name, String description, Uri filePath, LatLng latLng){
-        this.track_Id = track_Id;
-        this.name = name;
-        this.description = description;
-        this.filePath = filePath;
-    }
-
-    @Exclude
-    public byte[] getByteArrayFromImage() {
-        return byteArrayFromImage;
-    }
-
-    public void setByteArrayFromImage(byte[] byteArrayFromImage) {
-        this.byteArrayFromImage = byteArrayFromImage;
-    }
-
-    @Exclude
-    public Uri getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(Uri filePath) {
-        this.filePath = filePath;
+        super(track_Id, name, description, filePath, latLng, true);
     }
 
 
-    public String getImage64() {
-        return image64;
-    }
 
-    public void setImage64(String image64) {
-        this.image64 = image64;
-    }
 
-    public int getId(){
-        return this.id;
-    }
 
-    public int getTrack_Id(){
-        return this.track_Id;
-    }
 
-    public String getName(){
-        return this.name;
-    }
-
-    public String getDescription(){
-        return this.description;
-    }
-
-    public void setId(int id){
-        this.id = id;
-    }
-
-    public void setTrack_Id(int track_id){
-        this.track_Id = track_id;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public void setDescription(String description){
-        this.description = description;
-    }
-
-    public LatLng getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
-    }
 }
 

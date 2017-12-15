@@ -229,7 +229,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
             poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
             poi.setFilePath(filePath);
-            LocalData.addPOI(poi);
+            LocalData.addPO(poi);
             finish();
             onBackPressed();
         }

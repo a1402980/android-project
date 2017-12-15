@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +32,7 @@ import java.util.Map;
 
 public class LocalData {
     private static Track track;
-    private static List<POD> podList;
-    private static List<POI> poiList;
+    private static List<PO> poList;
 
     public static void setTrack(Track track) {
         LocalData.track = track;
@@ -44,33 +44,69 @@ public class LocalData {
         return track;
     }
 
-    public static List<POD> getPodList() {
-        return podList;
+    public static List<PO> getPoList() {
+        if (poList == null)
+            poList = new ArrayList<>();
+        if(poList.size() == 0)
+        {
+            POI poiExample = new POI();
+            poiExample.setName("Example");
+            poiExample.setDescription("This is only a Example");
+            poiExample.setLatLng(new LatLng(42, 13));
+            poList.add(poiExample);
+            POI poiExample2 = new POI();
+            poiExample2.setName("Example");
+            poiExample2.setDescription("This is only a Example");
+            poiExample2.setLatLng(new LatLng(42, 13));
+            poiExample2.setDescription("This is only a Example Number 2");
+            poList.add(poiExample2);
+            POI poiExample3 = new POI();
+            poiExample3.setName("Example");
+            poiExample3.setDescription("This is only a Example");
+            poiExample3.setLatLng(new LatLng(42, 13));
+            poiExample3.setDescription("This is only a Example Number 3");
+            poList.add(poiExample3);
+            POI poiExample4 = new POI();
+            poiExample4.setName("Example");
+            poiExample4.setDescription("This is only a Example");
+            poiExample4.setLatLng(new LatLng(42, 13));
+            poiExample4.setDescription("This is only a Example Number 4");
+            poList.add(poiExample4);
+
+        }
+
+        return poList;
     }
 
-    public static List<POI> getPoiList() {
-        return poiList;
-    }
-
-    public static void addPOD(POD pod)
+    public static void addPO(PO po)
     {
-        if (podList == null)
-            podList = new ArrayList<>();
-        podList.add(pod);
+        if (poList == null)
+            poList = new ArrayList<>();
+        poList.add(po);
     }
 
-    public static void addPOI(POI poi)
+
+    public static void removePO(String id)
     {
-        if (poiList == null)
-            poiList = new ArrayList<>();
-        poiList.add(poi);
+     PO temp = null;
+        for (PO po: poList) {
+            if(po.getId() == id)
+            {
+                temp = po;
+            }
+        }
+     if (temp != null)
+     {
+         poList.remove(temp);
+         Log.d("Remove", temp.getId());
+     }
+
     }
 
     public static void resetAll()
     {
         Track track = null;
-        poiList = new ArrayList<POI>();
-        podList = new ArrayList<POD>();
+        poList = new ArrayList<PO>();
     }
 
     public static void saveDataFirebase()
@@ -83,7 +119,7 @@ public class LocalData {
 
         String trackKey = trackRef.push().getKey();
 
-        SaveClass sc = new SaveClass(podList, poiList, track);
+        SaveClass sc = new SaveClass(poList, track);
 
         Map<String, Object> childs = new HashMap<String, Object>();
 
@@ -101,15 +137,10 @@ public class LocalData {
             Log.d("ERROR", e.getMessage());
         }
 
-        if (podList != null)
-            for (POD pod: podList) {
-               // if (pod.getFilePath() != null)
-                 //   savePicture(pod.getFilePath(), sc.getTrack().getName(), pod.getName());
-            }
 
-        if (poiList != null)
-            for (POI poi: poiList) {
-                    savePicture(poi.getByteArrayFromImage(), sc.getTrack().getName(), poi.getName());
+        if (poList != null)
+            for (PO po: poList) {
+                    savePicture(po.getByteArrayFromImage(), sc.getTrack().getName(), po.getName());
             }
         //Add Save Pictures here later
     }
@@ -193,17 +224,25 @@ public class LocalData {
 
     private static class SaveClass
     {
-        private List<POD> pod;
         private List<POI> poi;
+        private List<POD> pod;
         private Track track;
 
-        public SaveClass(List<POD> pod, List<POI> poi, Track track) {
-            if (pod == null)
-                pod = new ArrayList<>();
-            if (poi == null)
-                poi = new ArrayList<>();
-            this.pod = pod;
-            this.poi = poi;
+        public SaveClass(List<PO> po, Track track) {
+            if (po == null)
+                po = new ArrayList<>();
+            poi = new ArrayList<POI>();
+            pod = new ArrayList<POD>();
+
+            for (PO poObjecz: po) {
+                if(poObjecz.isPOI())
+                {
+                    poi.add((POI) poObjecz);
+                }else
+                {
+                    pod.add((POD) poObjecz);
+                }
+            }
             this.track = track;
         }
 
@@ -213,16 +252,12 @@ public class LocalData {
             return track;
         }
 
-        public List<POD> getPod() {
-            if(pod == null)
-                pod = new ArrayList<>();
-            return pod;
+        public List<POI> getPoi() {
+            return poi;
         }
 
-        public List<POI> getPoi() {
-            if (poi == null)
-                pod = new ArrayList<>();
-            return poi;
+        public List<POD> getPod() {
+            return pod;
         }
     }
 }
