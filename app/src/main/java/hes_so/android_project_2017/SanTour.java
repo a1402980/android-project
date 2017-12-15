@@ -56,6 +56,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private Timer t;
     private DrawerLayout dl;
 
+    //check if this activity is active
+    static boolean active = false;
+
 
     // some transient state for the activity instance
     private String mGameState;
@@ -64,7 +67,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     @Override
     protected void onStart() {
         super.onStart();
+        active = true;
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
 
@@ -99,6 +109,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startTimer();
 
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
+        nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
 
     }
@@ -110,7 +121,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
        View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
-                //fragmentClass = SanTour.class;
+                if (active == false){
+                    buttonSanTourClick(v);
+                }
+
                 break;
 
             case R.id.createPOD:
@@ -129,7 +143,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 break;
 
             default:
-                //fragmentClass = SanTour.class;
+                buttonSanTourClick(v);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -147,6 +161,11 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
     static final int PICK_CONTACT_REQUEST = 1;
+
+    public void buttonSanTourClick(View v){
+        Intent intent = new Intent(SanTour.this, SanTour.class);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
 
     public void buttonAddPOIOnClick(View v) {
         timerIsRunning = false;

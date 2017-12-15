@@ -1,10 +1,19 @@
 package hes_so.android_project_2017;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.PersistableBundle;
+import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -15,10 +24,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
+import java.util.List;
 
 public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
@@ -132,6 +149,62 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
 
 
+    public void onAddDifficultyClick(View view) {
+
+        FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
+        DatabaseReference podCategRef;
+
+        podCategRef = mdatabase.getReference("PODcategory");
+
+        //List<PODcategory> podCategs = new ArrayList<PODcategory>();
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
+
+        final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        podCategRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
+
+                    PODcategory categ = podCategSnap.getValue(PODcategory.class);
+                    CheckBox cb = new CheckBox(getApplicationContext());
+                    cb.setText(categ.getName());
+                    cb.setTextColor(Color.BLACK);
+                    layout.addView(cb);
+
+                    SeekBar sb = new SeekBar(getApplicationContext());
+                    sb.setMax(10);
+                    sb.setProgress(0);
+
+                    layout.addView(sb);
+                    //podCategs.add(podCategs.size(),categ);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //Log.e("POD categories: ", String.valueOf(podCategs.size()));
+        /*for(PODcategory podCateg : podCategs){
+
+            CheckBox cb = new CheckBox(this);
+            cb.setText(podCateg.getName());
+            layout.addView(cb);
+        }*/
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddPod.this);
+
+        Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
+
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
+    }
+
     @Override
     public void onClick(View view) {
         //if the clicked button is choose
@@ -161,6 +234,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         return strDate;
 
     }
+
 
 /* Move to LocalData
     //this method will upload the file
