@@ -48,7 +48,8 @@
         </activity>
         <activity android:name=".AddPoi" />
         <activity android:name=".AddPod" />
-        <activity android:name=".ListView"></activity>
+        <activity android:name=".ListView" />
+        <activity android:name=".Options"></activity>
     </application>
 
 </manifest>

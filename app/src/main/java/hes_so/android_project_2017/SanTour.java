@@ -121,7 +121,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
        View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
-                if (active == false){
+                if (!active){
                     buttonSanTourClick(v);
                 }
 
@@ -139,8 +139,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 Intent intent = new Intent(SanTour.this, ListView.class);
                 startActivityForResult(intent, PICK_CONTACT_REQUEST);
-
                 break;
+
+            case R.id.Options:
+                Intent intent2 = new Intent(SanTour.this, Options.class);
+                startActivityForResult(intent2, PICK_CONTACT_REQUEST);
+                break;
+
 
             default:
                 buttonSanTourClick(v);
