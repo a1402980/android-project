@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -158,16 +159,17 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         //List<PODcategory> podCategs = new ArrayList<PODcategory>();
 
-        View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
+        final View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
 
         final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        podCategRef.addValueEventListener(new ValueEventListener() {
+        podCategRef.addListenerForSingleValueEvent(new ValueEventListener() {
             int i = 0;
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
 
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
@@ -179,12 +181,34 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                     SeekBar seek = new SeekBar(getApplicationContext());
                     seek.setId(i);
+                    seek.setTag("seek" + i);
                     seek.setMax(10);
                     seek.setProgress(0);
                     seek.setVisibility(View.GONE);
 
                     layout.addView(seek);
                     //podCategs.add(podCategs.size(),categ);
+
+                    cb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            CheckBox cb = (CheckBox) view;
+                            SeekBar seek = (SeekBar)mView.findViewWithTag("seek" + cb.getId());
+
+                            if(!cb.isSelected()){
+                                cb.setSelected(true);
+
+                                seek.setVisibility(View.VISIBLE);
+                            }else{
+                                cb.setSelected(false);
+
+                                seek.setVisibility(View.GONE);
+                            }
+
+                        }
+                    });
+
                     i++;
                 }
             }
@@ -233,10 +257,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             finish();
             onBackPressed();
         }
-    }
-
-    public void onDifficultyCheckboxClick(View view){
-
     }
 
     public String getCurrentDate() {
