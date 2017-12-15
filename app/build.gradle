@@ -44,6 +44,8 @@ compile project(":swipelibary")
     compile 'com.nineoldandroids:library:2.4.0'
     // This dude gave a shoutout to you (daimajia) on his github page:
     compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }
 
 

@@ -33,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
@@ -154,8 +156,11 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
         DatabaseReference podCategRef;
+        DatabaseReference connectedRef;
 
         podCategRef = mdatabase.getReference("PODcategory");
+
+        connectedRef = mdatabase.getReference(".info/connected");
 
         //List<PODcategory> podCategs = new ArrayList<PODcategory>();
 
@@ -163,6 +168,8 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
         layout.setOrientation(LinearLayout.VERTICAL);
+
+
 
         podCategRef.addListenerForSingleValueEvent(new ValueEventListener() {
             int i = 0;
@@ -175,12 +182,12 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
                     CheckBox cb = new CheckBox(getApplicationContext());
                     cb.setId(i);
+                    cb.setTag("cb" + i);
                     cb.setText(categ.getName());
                     cb.setTextColor(Color.BLACK);
                     layout.addView(cb);
 
-                    SeekBar seek = new SeekBar(getApplicationContext());
-                    seek.setId(i);
+                    DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
                     seek.setTag("seek" + i);
                     seek.setMax(10);
                     seek.setProgress(0);
@@ -194,7 +201,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                         public void onClick(View view) {
 
                             CheckBox cb = (CheckBox) view;
-                            SeekBar seek = (SeekBar)mView.findViewWithTag("seek" + cb.getId());
+                            DiscreteSeekBar seek = mView.findViewWithTag("seek" + cb.getId());
 
                             if(!cb.isSelected()){
                                 cb.setSelected(true);
@@ -211,6 +218,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                     i++;
                 }
+                mView.findViewById(R.id.difficultySpinner).setVisibility(View.GONE);
             }
 
             @Override
@@ -218,6 +226,24 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
             }
         });
+
+        /*connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = dataSnapshot.getValue(Boolean.class);
+
+                if(connected){
+                    Toast.makeText(getApplicationContext(),"Getting POD categories...", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Internet connection", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
 
         //Log.e("POD categories: ", String.valueOf(podCategs.size()));
         /*for(PODcategory podCateg : podCategs){
