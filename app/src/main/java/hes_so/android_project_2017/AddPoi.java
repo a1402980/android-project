@@ -167,13 +167,14 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
         }
 
         else if(view== savePoi){
-            POI poi = new POI();
+            PO poi = new POI();
             poi.setName(((TextView) findViewById(R.id.poiName)).getText().toString());
             poi.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
             poi.setImage64(encodedImage);
             poi.setByteArrayFromImage(imageByte);
             poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
-            LocalData.addPOI(poi);
+            poi.setPOI(true);
+            LocalData.addPO(poi);
             finish();
             onBackPressed();
         }

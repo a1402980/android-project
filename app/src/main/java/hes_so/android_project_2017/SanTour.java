@@ -121,6 +121,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 buttonAddPOIOnClick(v);
                 break;
 
+            case R.id.POIPODlist:
+
+                Intent intent = new Intent(SanTour.this, ListView.class);
+                startActivityForResult(intent, PICK_CONTACT_REQUEST);
+
+                break;
+
             default:
                 //fragmentClass = SanTour.class;
         }
