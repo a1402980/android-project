@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-compile project(":swipelibary")
+    compile project(":swipelibary")
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.google.firebase:firebase-auth:11.6.0'
@@ -44,7 +44,10 @@ compile project(":swipelibary")
     compile 'com.nineoldandroids:library:2.4.0'
     // This dude gave a shoutout to you (daimajia) on his github page:
     compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }
+
 
 
 

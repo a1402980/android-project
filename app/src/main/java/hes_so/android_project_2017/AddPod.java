@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -153,33 +156,70 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
         DatabaseReference podCategRef;
+        DatabaseReference connectedRef;
 
         podCategRef = mdatabase.getReference("PODcategory");
 
+        connectedRef = mdatabase.getReference(".info/connected");
+
         //List<PODcategory> podCategs = new ArrayList<PODcategory>();
 
-        View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
+        final View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
 
         final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
         layout.setOrientation(LinearLayout.VERTICAL);
-        podCategRef.addValueEventListener(new ValueEventListener() {
+
+
+
+        podCategRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            int i = 0;
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
 
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
                     CheckBox cb = new CheckBox(getApplicationContext());
+                    cb.setId(i);
+                    cb.setTag("cb" + i);
                     cb.setText(categ.getName());
                     cb.setTextColor(Color.BLACK);
+                    cb.setPadding(0,40,0,40);
                     layout.addView(cb);
 
-                    SeekBar sb = new SeekBar(getApplicationContext());
-                    sb.setMax(10);
-                    sb.setProgress(0);
+                    DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
+                    seek.setTag("seek" + i);
+                    seek.setMax(10);
+                    seek.setProgress(0);
+                    seek.setVisibility(View.GONE);
 
-                    layout.addView(sb);
+                    layout.addView(seek);
                     //podCategs.add(podCategs.size(),categ);
+
+                    cb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            CheckBox cb = (CheckBox) view;
+                            DiscreteSeekBar seek = mView.findViewWithTag("seek" + cb.getId());
+
+                            if(!cb.isSelected()){
+                                cb.setSelected(true);
+
+                                seek.setVisibility(View.VISIBLE);
+                            }else{
+                                cb.setSelected(false);
+
+                                seek.setVisibility(View.GONE);
+                            }
+
+                        }
+                    });
+
+                    i++;
                 }
+                mView.findViewById(R.id.difficultySpinner).setVisibility(View.GONE);
             }
 
             @Override
@@ -187,6 +227,24 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
             }
         });
+
+        /*connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = dataSnapshot.getValue(Boolean.class);
+
+                if(connected){
+                    Toast.makeText(getApplicationContext(),"Getting POD categories...", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Internet connection", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
 
         //Log.e("POD categories: ", String.valueOf(podCategs.size()));
         /*for(PODcategory podCateg : podCategs){
