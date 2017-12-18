@@ -1,1 +1,1 @@
-include ':app', ':swipelibary'
+include ':grp5.santour', ':swipelibary'
