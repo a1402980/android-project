@@ -31,8 +31,11 @@ import java.util.Map;
  */
 
 public class LocalData {
+    private static boolean timerIsRunning = false;
     private static Track track;
     private static List<PO> poList;
+    private static String actuellLongitute = "";
+    private static String actuellLangitude="";
 
     public static void setTrack(Track track) {
         LocalData.track = track;
@@ -259,5 +262,34 @@ public class LocalData {
         public List<POD> getPod() {
             return pod;
         }
+    }
+
+
+    public static boolean isTimerIsRunning() {
+        return timerIsRunning;
+    }
+
+    public static void setTimerIsRunning(boolean timerIsRunning) {
+        LocalData.timerIsRunning = timerIsRunning;
+    }
+
+    public static void setPoList(List<PO> poList) {
+        LocalData.poList = poList;
+    }
+
+    public static String getActuellLongitute() {
+        return actuellLongitute;
+    }
+
+    public static void setActuellLongitute(String actuellLongitute) {
+        LocalData.actuellLongitute = actuellLongitute;
+    }
+
+    public static String getActuellLangitude() {
+        return actuellLangitude;
+    }
+
+    public static void setActuellLangitude(String actuellLangitude) {
+        LocalData.actuellLangitude = actuellLangitude;
     }
 }

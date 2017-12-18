@@ -168,7 +168,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public void buttonAddPOIOnClick(View v) {
-        timerIsRunning = false;
+        LocalData.setTimerIsRunning(false);
         Intent intent = new Intent(SanTour.this, AddPoi.class);
         String longitude = longitudeField.getText().toString();
         String latitude = latitudeField.getText().toString();
@@ -178,7 +178,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public void buttonAddPODOnClick(View v) {
-        timerIsRunning = false;
+        LocalData.setTimerIsRunning(false);
         Intent intent = new Intent(SanTour.this, AddPod.class);
         String longitude = longitudeField.getText().toString();
         String latitude = latitudeField.getText().toString();
@@ -224,7 +224,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     private int seconds = 0;
     private int minutes = 0;
-    private boolean timerIsRunning = false;
 
     private void startTimer()
     {
@@ -244,7 +243,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
 
-                            if (timerIsRunning) {
+                            if (LocalData.isTimerIsRunning()) {
 
                                 seconds++;
                                 if (seconds >= 60) {
@@ -317,7 +316,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     public void buttonPauseOnClick(View v){
         if (tracking == true) {
-            timerIsRunning = false;
+            LocalData.setTimerIsRunning(false);
+
             tracking = false;
     
         }
@@ -329,7 +329,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
-            timerIsRunning = true;
+            LocalData.setTimerIsRunning(true);
+
             Button button = (Button) v;
             ((Button) v).setText("Stop");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
@@ -338,7 +339,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             pauseButton.setVisibility(View.VISIBLE);
 
         }else{
-            timerIsRunning = false;
+            LocalData.setTimerIsRunning(false);
             tracking = false;
             Button button = (Button) v;
             ((Button) v).setText("Start");
@@ -370,31 +371,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
     }
 
-    /*public void uploadTracks(List<LatLng> trackingPoints ){
 
-            //Upload the trek the user did
-
-        String trackPointsKey;
-        String trackName = ((EditText) findViewById(R.id.txtTrackName)).getText().toString();
-
-        Track track1 = new Track(trackName, "");
-        String trackKey = trackRef.push().getKey();
-
-        Map<String, Object> newTracks = new HashMap<>();
-        newTracks.put( trackKey, track1 );
-        trackRef.updateChildren(newTracks);
-
-        trackPointsRef = trackRef.child(trackKey).child("GPS");
-        Map<String, Object> newTrackPoints = new HashMap<>();
-
-        for (int i = 0; i < trackingPoints.size(); i++) {
-            trackPointsKey = String.valueOf(i);
-            newTrackPoints.put(trackPointsKey, trackingPoints.get(i));
-        }
-
-
-        trackPointsRef.updateChildren(newTrackPoints);
-    }*/
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -581,12 +558,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
         minutes = savedInstanceState.getInt("MINUTES_INT");
         seconds = savedInstanceState.getInt("SECONDES_INT");
-        timerIsRunning = savedInstanceState.getBoolean("ISTIMERRUNNING");
+        LocalData.setTimerIsRunning(savedInstanceState.getBoolean("ISTIMERRUNNING"));
         distanceComplete = savedInstanceState.getFloat("DISTANCE_FLOAT");
         startTimer();
 
         Button button =  findViewById(R.id.trackButton);
-        if (timerIsRunning) {
+        if (LocalData.isTimerIsRunning()) {
             ((Button) button).setText("Stop");
             ((Button) button).setBackgroundColor(Color.argb(99, 234, 6, 0));
         }else
@@ -625,7 +602,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         outState.putFloat("DISTANCE_FLOAT", distanceComplete);
         outState.putInt("MINUTES_INT", minutes);
         outState.putInt("SECONDES_INT", seconds);
-        outState.putBoolean("ISTIMERRUNNING", timerIsRunning);
+        outState.putBoolean("ISTIMERRUNNING", LocalData.isTimerIsRunning());
         startTimer();
 
 
@@ -656,6 +633,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 mLastLocation.set(location);
                 LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
 
+                LocalData.setActuellLangitude(coordinate.latitude+"");
+                LocalData.setActuellLongitute(coordinate.longitude+"");
                 try {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
                     mMap.animateCamera(yourLocation);

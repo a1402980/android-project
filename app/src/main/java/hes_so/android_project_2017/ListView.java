@@ -1,14 +1,23 @@
 package hes_so.android_project_2017;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +42,17 @@ public class ListView extends AppCompatActivity {
     private android.widget.ListView mListView;
     private ListViewAdapter mAdapter;
     private Context mContext = this;
+
+
+    //check if this activity is active
+    static boolean active = false;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +128,83 @@ public class ListView extends AppCompatActivity {
         });
 
 
+
+        NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
+        nvDrawer.setCheckedItem(R.id.POIPODlist);
+        drawerSetup(nvDrawer);
+
+    }
+
+
+    public void selectItemDrawer(MenuItem menuItem){
+        Fragment myFragment = null;
+        //Class fragmentClass;
+        View  v = this.findViewById(android.R.id.content).getRootView();
+        switch (menuItem.getItemId()){
+            case R.id.createTrack:
+
+                   finish();
+
+
+                break;
+
+            case R.id.createPOD:
+                buttonAddPODOnClick(v);
+                break;
+
+            case R.id.createPOI:
+                buttonAddPOIOnClick(v);
+                break;
+
+            case R.id.POIPODlist:
+
+
+                break;
+
+            default:
+                buttonSanTourClick(v);
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+    }
+
+
+    static final int PICK_CONTACT_REQUEST = 1;
+    public void buttonSanTourClick(View v){
+        Intent intent = new Intent(ListView.this, SanTour.class);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    public void buttonAddPOIOnClick(View v) {
+        LocalData.setTimerIsRunning(false);
+        Intent intent = new Intent(ListView.this, AddPoi.class);
+        String longitude = LocalData.getActuellLongitute();
+        String latitude = LocalData.getActuellLangitude();
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    public void buttonAddPODOnClick(View v) {
+        LocalData.setTimerIsRunning(false);
+        Intent intent = new Intent(ListView.this, AddPod.class);
+        String longitude = LocalData.getActuellLongitute();
+        String latitude = LocalData.getActuellLangitude();
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+
+    private void drawerSetup(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectItemDrawer(item);
+                return true;
+            }
+        });
     }
 
     private void refreshData(List<PO> poList) {
