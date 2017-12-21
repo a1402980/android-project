@@ -38,7 +38,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="hes_so.grp5.santour.SanTour"
+            android:name="hes_so.santour.SanTour"
             android:label="@string/title_activity_san_tour">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,10 +46,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="hes_so.grp5.santour.AddPoi" />
-        <activity android:name="hes_so.grp5.santour.AddPod" />
-        <activity android:name="hes_so.grp5.santour.ListView" />
-        <activity android:name="hes_so.grp5.santour.Options"></activity>
+        <activity android:name="hes_so.santour.AddPoi" />
+        <activity android:name="hes_so.santour.AddPod" />
+        <activity android:name="hes_so.santour.ListView" />
+        <activity android:name="hes_so.santour.Options"></activity>
     </application>
 
 </manifest>
