@@ -23,6 +23,7 @@ public class Options extends AppCompatActivity {
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
         nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
+        nvDrawer.setCheckedItem(R.id.Options);
     }
 
 
