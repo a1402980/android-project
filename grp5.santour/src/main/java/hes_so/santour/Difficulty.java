@@ -1,8 +1,5 @@
 package hes_so.santour;
 
-/**
- * Created by Matthias and Joey on 04.12.2017.
- */
 
 public class Difficulty {
     private int level;
