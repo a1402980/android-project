@@ -49,7 +49,7 @@
         <activity android:name="hes_so.santour.AddPoi" />
         <activity android:name="hes_so.santour.AddPod" />
         <activity android:name="hes_so.santour.ListView" />
-        <activity android:name="hes_so.santour.Options"></activity>
+        <activity android:name="hes_so.santour.Options"/>
     </application>
 
 </manifest>
