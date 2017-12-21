@@ -340,26 +340,22 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
-            LocalData.setTimerIsRunning(true);
 
             Button button = (Button) v;
-            ((Button) v).setText("Stop");
+            ((Button) v).setText("Pause");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
 
-            Button pauseButton = ((Button) findViewById(R.id.pauseTracking));
-            pauseButton.setVisibility(View.VISIBLE);
+            Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
+            saveTrackButton.setVisibility(View.VISIBLE);
 
         }else{
-            LocalData.setTimerIsRunning(false);
             tracking = false;
             Button button = (Button) v;
-            ((Button) v).setText("Start");
+            ((Button) v).setText("Resume");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
 
-            Button pauseButton = ((Button) findViewById(R.id.pauseTracking));
-            pauseButton.setVisibility(View.INVISIBLE);
-        }
 
+        }
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
