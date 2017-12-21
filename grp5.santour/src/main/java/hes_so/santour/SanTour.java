@@ -53,6 +53,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private boolean tracking;
     private Timer t;
     private DrawerLayout dl;
+    public int maxGPS;
+    public int minGPS;
 
     //check if this activity is active
     static boolean active = false;
@@ -96,7 +98,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             mGameState = savedInstanceState.getString("GAMESTATEKEY");
         }
 
-
+        maxGPS = LocalData.getGpsMaxrange();
+        minGPS = LocalData.getGpsMinRange();
 
         setContentView(R.layout.activity_san_tour);
 
@@ -487,8 +490,26 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             } else {
                 distance = 15;
             }
-            Log.d("Update", loc + " // Distance : " + distance);
-            if ((distance<40 && distance>10)) {
+            //Log.d("Update", loc + " // Distance : " + distance);
+            int max = 0;
+            int min = 0;
+
+            maxGPS = LocalData.getGpsMaxrange();
+            minGPS = LocalData.getGpsMinRange();
+
+            if (maxGPS != 0){
+                max = maxGPS;
+            }else{
+                max = 40;
+            }
+
+            if (minGPS != 0){
+                min = minGPS;
+            }else{
+                min = 10;
+            }
+            Log.d("MaxGPS", max + " // MinGPS : " + min);
+            if ((distance<max && distance>min)) {
                 distanceComplete = distanceComplete + distance;
                 longitudeField.setText(String.format("%.4f", loc.getLongitude()));
                 latitudeField.setText(String.format("%.4f", loc.getLatitude()));

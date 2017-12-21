@@ -10,8 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.SeekBar;
+import android.widget.Toast;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 public class Options extends AppCompatActivity {
+
+    public int maxGPS;
+    public int minGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +33,84 @@ public class Options extends AppCompatActivity {
         nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
         nvDrawer.setCheckedItem(R.id.Options);
+
+        maxGPS = LocalData.getGpsMaxrange();
+        minGPS = LocalData.getGpsMinRange();
+
+        final CheckBox minCb = (CheckBox)findViewById(R.id.GPSminCheckbox);
+        final CheckBox maxCb = (CheckBox)findViewById(R.id.GPSmaxCheckbox);
+        final DiscreteSeekBar minSeek = (DiscreteSeekBar)findViewById(R.id.GPSmin);
+        final DiscreteSeekBar maxSeek = (DiscreteSeekBar)findViewById(R.id.GPSmax);
+
+        Button saveButton = (Button)findViewById(R.id.saveOptions);
+
+
+        if (minGPS != 0){
+            minCb.setChecked(false);
+            minSeek.setVisibility(View.VISIBLE);
+            minSeek.setProgress(minGPS);
+
+        }
+
+        if (maxGPS != 0){
+            maxCb.setChecked(false);
+            maxSeek.setVisibility(View.VISIBLE);
+            maxSeek.setProgress(maxGPS);
+        }
+
+        minCb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final boolean isChecked = minCb.isChecked();
+                if (isChecked == true){
+                    minSeek.setVisibility(View.GONE);
+                }else{
+                    minSeek.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+        });
+
+        maxCb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final boolean isChecked = maxCb.isChecked();
+                if (isChecked == true){
+                    maxSeek.setVisibility(View.GONE);
+                }else{
+                    maxSeek.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final boolean maxIsChecked = maxCb.isChecked();
+                final boolean minIsChecked = minCb.isChecked();
+
+                if (maxIsChecked == false){
+                    LocalData.setGpsMaxrange(maxSeek.getProgress());
+                }else{
+                    LocalData.setGpsMaxrange(0);
+                }
+
+
+                if (minIsChecked == false){
+                    LocalData.setGpsMinRange(minSeek.getProgress());
+                }else{
+                    LocalData.setGpsMinRange(0);
+                }
+
+                Toast.makeText(Options.this, "Options saved!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
+
+
 
 
     public void selectItemDrawer(MenuItem menuItem){
