@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -197,10 +198,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        // Get the layout inflater
+        LayoutInflater inflater = (this).getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
         builder.setTitle("Confirm");
         builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength() + "Nb POIs + Nb PODs");
 
-        builder.setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
+        builder.setView(inflater.inflate(R.layout.dialog_save, null))
+
+        .setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
@@ -209,6 +217,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 LocalData.saveDataFirebase();
                 dialog.dismiss();
 
+
+                seconds = 0;
+                minutes = 0;
+                distanceComplete = 0;
+
+                ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                updateTime();
+                LocalData.setTimerIsRunning(false);
+                longitudeField.setText("");
+                latitudeField.setText("");
+                ((TextView)findViewById(R.id.distanceTextView)).setText("0");
                 LocalData.getTrack().setName(null);
                 LocalData.getTrack().setKmLength(0);
                 LocalData.getTrack().setTimeDuration(null);
@@ -343,7 +362,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
-
+            LocalData.setTimerIsRunning(true);
             Button button = (Button) v;
             ((Button) v).setText("Pause");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
@@ -353,6 +372,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         }else{
             tracking = false;
+            LocalData.setTimerIsRunning(false);
             Button button = (Button) v;
             ((Button) v).setText("Resume");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
