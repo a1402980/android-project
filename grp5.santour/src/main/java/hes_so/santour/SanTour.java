@@ -206,6 +206,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 LocalData.saveDataFirebase();
                 dialog.dismiss();
 
+
+                seconds = 0;
+                minutes = 0;
+                distanceComplete = 0;
+
+                ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                updateTime();
+                LocalData.setTimerIsRunning(false);
+                longitudeField.setText("");
+                latitudeField.setText("");
+                ((TextView)findViewById(R.id.distanceTextView)).setText("0");
                 LocalData.getTrack().setName(null);
                 LocalData.getTrack().setKmLength(0);
                 LocalData.getTrack().setTimeDuration(null);
@@ -340,7 +351,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
-
+            LocalData.setTimerIsRunning(true);
             Button button = (Button) v;
             ((Button) v).setText("Pause");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
@@ -350,6 +361,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         }else{
             tracking = false;
+            LocalData.setTimerIsRunning(false);
             Button button = (Button) v;
             ((Button) v).setText("Resume");
             ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
