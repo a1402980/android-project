@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Matthias on 01.12.2017.
- */
 
 public class LocalData {
     private static boolean timerIsRunning = false;
