@@ -195,9 +195,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Confirm");
-        builder.setMessage("Are you sure you want to save this track?");
+        builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength() + "Nb POIs + Nb PODs");
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
@@ -205,6 +205,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
                 LocalData.saveDataFirebase();
                 dialog.dismiss();
+
+                LocalData.getTrack().setName(null);
+                LocalData.getTrack().setKmLength(0);
+                LocalData.getTrack().setTimeDuration(null);
+
+                Button start = ((Button) findViewById(R.id.trackButton));
+                ((Button) start).setText("Start");
+                ((Button) start).setBackgroundColor(Color.argb(99, 173, 234, 0));
             }
         });
 
