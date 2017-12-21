@@ -21,6 +21,9 @@ import java.util.Map;
 
 
 public class LocalData {
+    private static int gpsMaxrange;
+    private static int gpsMinRange;
+
     private static boolean timerIsRunning = false;
     private static Track track;
     private static List<PO> poList;
@@ -281,5 +284,21 @@ public class LocalData {
 
     public static void setActuellLangitude(String actuellLangitude) {
         LocalData.actuellLangitude = actuellLangitude;
+    }
+
+    public static int getGpsMaxrange() {
+        return gpsMaxrange;
+    }
+
+    public static void setGpsMaxrange(int gpsMaxrange) {
+        LocalData.gpsMaxrange = gpsMaxrange;
+    }
+
+    public static int getGpsMinRange() {
+        return gpsMinRange;
+    }
+
+    public static void setGpsMinRange(int gpsMinRange) {
+        LocalData.gpsMinRange = gpsMinRange;
     }
 }
