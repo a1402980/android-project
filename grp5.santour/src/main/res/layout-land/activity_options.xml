@@ -33,11 +33,13 @@
                 <CheckBox
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="Default" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     app:dsb_min="1"
                     app:dsb_max="50"
                     />
@@ -52,11 +54,13 @@
                 <CheckBox
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="Default" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     app:dsb_min="1"
                     app:dsb_max="50"
                     />
@@ -84,14 +88,14 @@
     </FrameLayout>
 
     <!-- The navigation drawer -->
-<android.support.design.widget.NavigationView
-    android:id="@+id/navigation"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
-    app:menu="@menu/navigation_menu"
-    app:headerLayout="@layout/header"/>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/navigation_menu"
+        app:headerLayout="@layout/header"/>
 
 
 
-    </android.support.v4.widget.DrawerLayout>
+</android.support.v4.widget.DrawerLayout>
