@@ -32,7 +32,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,6 +55,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private TextView latitudeField;
     private TextView longitudeField;
     private boolean tracking;
+    private boolean startPoint;
     private Timer t;
     private DrawerLayout dl;
     public int maxGPS;
@@ -101,6 +105,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         maxGPS = LocalData.getGpsMaxrange();
         minGPS = LocalData.getGpsMinRange();
+
+        startPoint = false;
 
         setContentView(R.layout.activity_san_tour);
 
@@ -359,10 +365,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
 
+
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
             LocalData.setTimerIsRunning(true);
+
             Button button = (Button) v;
             ((Button) v).setText("Pause");
             ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
@@ -533,6 +541,20 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 distanceComplete = distanceComplete + distance;
                 longitudeField.setText(String.format("%.4f", loc.getLongitude()));
                 latitudeField.setText(String.format("%.4f", loc.getLatitude()));
+
+
+                //set the starting point into the map
+                if (!startPoint){
+                    double Lat = Double.parseDouble(LocalData.getActuellLangitude());
+                    double Lng = Double.parseDouble(LocalData.getActuellLongitute());
+                    LatLng startMarker = new LatLng(Lat, Lng);
+                    mMap.addMarker(new MarkerOptions().position(startMarker)
+                            .title("Starting point")
+                            //setting the color
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    startPoint = true;
+                }
+                
 
                 //turning location into LatLng
                 LatLng coordinates = new LatLng(loc.getLatitude(), loc.getLongitude());
