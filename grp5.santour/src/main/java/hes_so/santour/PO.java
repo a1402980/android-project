@@ -5,9 +5,6 @@ import android.net.Uri;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
-/**
- * Created by Matthia on 14.12.2017.
- */
 
 public class PO {
 

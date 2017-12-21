@@ -5,9 +5,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lionel on 20/11/2017.
- */
 
 public class Track {
 

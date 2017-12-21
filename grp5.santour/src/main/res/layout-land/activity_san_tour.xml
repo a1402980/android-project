@@ -11,195 +11,86 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            tools:context="hes_so.santour.SanTour" />
-
         <LinearLayout
-            android:id="@+id/contentWrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_marginHorizontal="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dip"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/txtTrackName"
+                <TextView
+                    android:id="@+id/textView7"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Track Name"
-                    android:inputType="textPersonName" />
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:text="GPS tracking minimum (KM)" />
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Default" />
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/GPSmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:visibility="gone"
+                    app:dsb_min="1"
+                    app:dsb_max="50"
+                    />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:text="GPS tracking maximum (KM)" />
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Default" />
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/GPSmax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:visibility="gone"
+                    app:dsb_min="1"
+                    app:dsb_max="50"
+                    />
+
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/textView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="About:" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Santour made by HEVS students (group 5) for Cloud project 2017" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1.0">
-
-                <Button
-                    android:id="@+id/trackButton"
-                    android:layout_width="334dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:background="?attr/colorAccent"
-                    android:onClick="buttonOnClick"
-                    android:text="Start" />
-
-                <Button
-                    android:id="@+id/pauseTracking"
-                    android:layout_width="334dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:background="@android:color/darker_gray"
-                    android:onClick="buttonPauseOnClick"
-                    android:text="Pause"
-                    android:visibility="invisible" />
-
-
-            </LinearLayout>
-
-
-
-            <LinearLayout
-                android:id="@+id/linearLayout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dip"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:id="@+id/TextView01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
-                    android:text="Latitude: "
-                    android:textSize="15dip" />
-
-                <TextView
-                    android:id="@+id/TextView02"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="unknown"
-                    android:textSize="15dip" />
-
-
-                <TextView
-                    android:id="@+id/TextView03"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginRight="5dip"
-                    android:text="Longitute: "
-                    android:textSize="15dip" />
-
-                <TextView
-                    android:id="@+id/TextView04"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="unknown"
-                    android:textSize="15dip" />
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dip"
-                android:orientation="horizontal">
-
-                <!--<TextView-->
-                <!--android:layout_width="5dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="Timer:" />-->
-                <TextView
-                    android:id="@+id/timeTextView"
-                    android:layout_width="3dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@android:drawable/ic_menu_recent_history"
-                    android:gravity="center_vertical|left"
-                    android:text="00:00" />
-
-                <!--<TextView-->
-                <!--android:layout_width="11dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:gravity="end"-->
-                <!--android:text="KM:" />-->
-                <TextView
-                    android:id="@+id/distanceTextView"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@android:drawable/ic_menu_mapmode"
-                    android:gravity="center_vertical|left"
-                    android:text="0" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1.0">
-
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:drawableLeft="@android:drawable/ic_menu_add"
-                    android:onClick="buttonAddPODOnClick"
-                    android:text="POD" />
-
-                <Button
-                    android:id="@+id/add_poi"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:drawableLeft="@android:drawable/ic_menu_add"
-                    android:onClick="buttonAddPOIOnClick"
-                    android:text="POI" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/saveTrack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="buttonSaveTrackOnClick"
-                android:text="Save Track" />
 
         </LinearLayout>
-
-</LinearLayout>
 
     </FrameLayout>
 

@@ -4,9 +4,6 @@ import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by Lionel on 20/11/2017.
- */
 
 public class POI  extends PO{
 

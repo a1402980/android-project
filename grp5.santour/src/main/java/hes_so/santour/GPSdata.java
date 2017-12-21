@@ -1,8 +1,5 @@
 package hes_so.santour;
 
-/**
- * Created by Lionel on 20/11/2017.
- */
 
 public class GPSdata {
     private int id;
