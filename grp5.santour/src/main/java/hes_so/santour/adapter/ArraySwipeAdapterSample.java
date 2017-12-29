@@ -1,6 +1,7 @@
 package hes_so.santour.adapter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.daimajia.swipe.adapters.ArraySwipeAdapter;
 
@@ -31,6 +32,7 @@ public class ArraySwipeAdapterSample<T> extends ArraySwipeAdapter {
     public ArraySwipeAdapterSample(Context context, int resource, int textViewResourceId, Object[] objects) {
         super(context, resource, textViewResourceId, objects);
 
+        Log.d("","");
     }
 
     public ArraySwipeAdapterSample(Context context, int resource, List objects) {
