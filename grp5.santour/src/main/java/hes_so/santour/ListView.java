@@ -3,8 +3,12 @@ package hes_so.santour;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +43,7 @@ public class ListView extends AppCompatActivity {
     private android.widget.ListView mListView;
     private ListViewAdapter mAdapter;
     private Context mContext = this;
-
+    private  List<PO> poList;
 
     //check if this activity is active
     static boolean active = false;
@@ -49,6 +53,26 @@ public class ListView extends AppCompatActivity {
         super.onStart();
         active = true;
 
+        mListView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if(poList.size() == mListView.getChildCount())
+                {
+                    for (int i = 0; i< mListView.getChildCount(); i++)
+                    {
+                        if (poList.get(i).isPOI()) {
+                            LinearLayout ll =  (LinearLayout)((SwipeLayout)mListView.getChildAt(i)).getChildAt(1);
+                            ll.setBackgroundColor(Color.BLUE);
+                        }else
+                        {
+                           LinearLayout ll =  (LinearLayout)((SwipeLayout)mListView.getChildAt(i)).getChildAt(1);
+                           ll.setBackgroundColor(Color.RED);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
@@ -57,7 +81,7 @@ public class ListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_list_view);
-        mListView = (android.widget.ListView) findViewById(R.id.listview);
+        mListView = (android.widget.ListView) findViewById(R.id.listview2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
@@ -68,7 +92,7 @@ public class ListView extends AppCompatActivity {
         /**
          * The following comment is the sample usage of ArraySwipeAdapter.
          */
-        List<PO> poList = LocalData.getPoList();
+        poList = LocalData.getPoList();
 
         if(poList == null)
             poList = new ArrayList<>();
@@ -129,7 +153,6 @@ public class ListView extends AppCompatActivity {
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
         nvDrawer.setCheckedItem(R.id.POIPODlist);
         drawerSetup(nvDrawer);
-
     }
 
 
@@ -216,6 +239,7 @@ public class ListView extends AppCompatActivity {
         //mAdapter.setMode(Attributes.Mode.Single);
 
         mListView.setAdapter(new ArraySwipeAdapterSample<String>(this, R.layout.listview_item, R.id.position, adapterData));
+
     }
 
 
@@ -250,6 +274,9 @@ public class ListView extends AppCompatActivity {
         refreshData(LocalData.getPoList());
         mAdapter.notifyDatasetChanged();
     }
+
+
+
 
 
 
