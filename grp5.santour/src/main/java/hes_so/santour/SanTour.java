@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -212,7 +214,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Toast.makeText(this, "Please enter the track name first!", Toast.LENGTH_SHORT).show();
         }else if(finalDistance < minDist){
             Toast.makeText(this, "Your track must be over " + minDist + " KM, your track is currently " + finalDistance + " KM long!", Toast.LENGTH_SHORT).show();
-        }else{
+
+        }else  if (checkIfConnectedToInternet(this)==false){
+
+            Log.e(TAG, "INTERNET CONNECTION LOST");
+
+
+            }
+            else{
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -657,6 +666,18 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             ((Button) button).setText("Start");
             ((Button) button).setBackgroundColor(Color.parseColor("#55a543"));
         }
+
+    }
+
+
+    public boolean checkIfConnectedToInternet(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
 
     }
 
