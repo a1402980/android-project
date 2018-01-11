@@ -200,11 +200,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     }
 
     public void buttonSaveTrackOnClick(View v) {
+
+        //variables for validation
         String trackTitle = ((TextView) findViewById(R.id.txtTrackName)).getText().toString();
         double finalDistance = Double.parseDouble(String.format("%.4f", distanceComplete/1000));
-        Log.e(TAG, "==========================================================");
-        Log.e(TAG, "Distance: " + finalDistance);
         double minDist = 0.1;
+
+
+        //validate that the track is not too short and it has a title
         if ( TextUtils.isEmpty(trackTitle)){
             Toast.makeText(this, "Please enter the track name first!", Toast.LENGTH_SHORT).show();
         }else if(finalDistance < minDist){
@@ -219,7 +222,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle("Confirm");
-        builder.setMessage("Overview of the track: \nTrack name: "+trackTitle+"\nDistance: " + Distance + " KM\nDuration: " + Time);
+        builder.setMessage("Overview of the track:\n\nTrack name: "+trackTitle+"\nDistance: " + Distance + " KM\nDuration: " + Time);
 
 
 
