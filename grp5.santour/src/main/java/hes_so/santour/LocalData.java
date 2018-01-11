@@ -25,10 +25,14 @@ public class LocalData {
     private static int gpsMinRange;
 
     private static boolean timerIsRunning = false;
+    private static boolean trackingFinished = false;
     private static Track track;
     private static List<PO> poList;
     private static String actuellLongitute = "";
     private static String actuellLangitude="";
+
+
+
 
     public static void setTrack(Track track) {
         LocalData.track = track;
@@ -73,6 +77,14 @@ public class LocalData {
         }
 
         return poList;
+    }
+
+    public static boolean isTrackingFinished() {
+        return trackingFinished;
+    }
+
+    public static void setTrackingFinished(boolean trackingFinished) {
+        LocalData.trackingFinished = trackingFinished;
     }
 
     public static void addPO(PO po)
