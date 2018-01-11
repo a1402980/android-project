@@ -238,7 +238,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 Button start = ((Button) findViewById(R.id.trackButton));
                 ((Button) start).setText("Start");
-                ((Button) start).setBackgroundColor(Color.argb(99, 173, 234, 0));
+                ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
             }
         });
 
@@ -371,7 +371,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             Button button = (Button) v;
             ((Button) v).setText("Pause");
-            ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
+            ((Button) v).setBackgroundColor(Color.parseColor("#E12637"));
 
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
@@ -381,7 +381,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             LocalData.setTimerIsRunning(false);
             Button button = (Button) v;
             ((Button) v).setText("Resume");
-            ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            ((Button) v).setBackgroundColor(Color.parseColor("#55a543"));
 
 
         }
@@ -633,13 +633,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         Button button =  findViewById(R.id.trackButton);
         if (LocalData.isTimerIsRunning()) {
             ((Button) button).setText("Pause");
-            ((Button) button).setBackgroundColor(Color.argb(99, 234, 6, 0));
+            ((Button) button).setBackgroundColor(Color.parseColor("#E12637"));
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
         }else
         {
             ((Button) button).setText("Start");
-            ((Button) button).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            ((Button) button).setBackgroundColor(Color.parseColor("#55a543"));
         }
 
     }
