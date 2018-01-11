@@ -144,7 +144,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
 
 
-    public void onAddDifficultyClick(View view) {
+    public void onAddDifficultyClick(final View view) {
 
         FirebaseDatabase mdatabase = FirebaseDatabase.getInstance();
         DatabaseReference podCategRef;
@@ -211,6 +211,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                     i++;
                 }
+
                 mView.findViewById(R.id.difficultySpinner).setVisibility(View.GONE);
             }
 
