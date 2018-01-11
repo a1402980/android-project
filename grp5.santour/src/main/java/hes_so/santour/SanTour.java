@@ -202,10 +202,13 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        String Distance = String.format("%.4f", distanceComplete/1000);
+
+
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle("Confirm");
-        builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength());
+        builder.setMessage("Overview of the track " + Distance);
 
 
 
