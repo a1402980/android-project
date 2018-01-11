@@ -239,6 +239,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             public void onClick(DialogInterface dialog, int which) {
 
+
+                //Stop the timer
+
+                LocalData.setTimerIsRunning(false);
+
+
                 double Lat = Double.parseDouble(LocalData.getActuellLangitude());
                 double Lng = Double.parseDouble(LocalData.getActuellLongitute());
                 LatLng startMarker = new LatLng(Lat, Lng);
@@ -251,29 +257,29 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 LocalData.getTrack().setKmLength(distanceComplete / 1000);
                 LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
 
-                dialog.dismiss();
+
 
                 //check internet connection
                 if (!checkIfConnectedToInternet(SanTour.this)){
 
+                    Toast.makeText(SanTour.this, "No internet connection! Your track will be uploaded when " +
+                            "you are connected to the internet!", Toast.LENGTH_SHORT).show();
+
+                    //disable tracking until internet connection is connected
+                    Button startb = ((Button) findViewById(R.id.trackButton));
+                    ((Button) startb).setEnabled(false);
+                    ((Button) startb).setBackgroundColor(Color.LTGRAY);
+
+                    //Until the check connection gives true, tracking is blocked
                     while(!checkIfConnectedToInternet(SanTour.this)) {
-                        Toast.makeText(SanTour.this, "No internet connection! Your track will be uploaded when " +
-                                "you are connected to the internet!", Toast.LENGTH_SHORT).show();
-
-                        //disable tracking until internet connection is connected
-                        Button startb = ((Button) findViewById(R.id.trackButton));
-                        ((Button) startb).setEnabled(false);
-                        ((Button) startb).setBackgroundColor(Color.LTGRAY);
-
 
                         tracking = false;
                         LocalData.setTrackingFinished(true);
-                        LocalData.setTimerIsRunning(false);
+
                     }
 
-                }else{
-
                     LocalData.saveDataFirebase();
+
 
                     //reset data
                     seconds = 0;
@@ -295,8 +301,35 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     Button start = ((Button) findViewById(R.id.trackButton));
                     ((Button) start).setText("Start");
                     ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
-                }
 
+                    dialog.dismiss();
+
+                }else{
+
+                    LocalData.saveDataFirebase();
+
+                    //reset data
+                    seconds = 0;
+                    minutes = 0;
+                    distanceComplete = 0;
+                    mMap.clear();
+
+
+                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                    updateTime();
+                    longitudeField.setText("");
+                    latitudeField.setText("");
+                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
+                    LocalData.getTrack().setName(null);
+                    LocalData.getTrack().setKmLength(0);
+                    LocalData.getTrack().setTimeDuration(null);
+
+                    Button start = ((Button) findViewById(R.id.trackButton));
+                    ((Button) start).setText("Start");
+                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
+
+                    dialog.dismiss();
+                }
 
             }
         });
@@ -710,9 +743,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
         }
-
-
     }
+
+
 
 
     public boolean checkIfConnectedToInternet(Context context){
