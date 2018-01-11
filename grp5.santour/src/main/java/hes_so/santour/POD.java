@@ -14,14 +14,13 @@ public class POD extends PO{
 
     public POD(){
         super();
-        difficultiesList = new ArrayList<Difficulty>();
+        this.difficultiesList = new ArrayList<>();
     }
 
     public POD(int track_Id, String name, String description, Uri filePath, LatLng latLng){
         super(track_Id, name, description, filePath, latLng, false);
-        difficultiesList = new ArrayList<Difficulty>();
+        difficultiesList = new ArrayList<>();
     }
-
 
 
     public void addDifficulty(Difficulty d)
@@ -30,7 +29,7 @@ public class POD extends PO{
     }
 
     public ArrayList<Difficulty> getDifficultiesList() {
-        return difficultiesList;
+        return this.difficultiesList;
     }
 
 }

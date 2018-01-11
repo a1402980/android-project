@@ -47,11 +47,11 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/cancel_action"
+                android:id="@+id/cancelAction"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:onClick="cancelOnClick"
+                android:onClick="onClick"
                 android:text="Cancel" />
 
             <Button

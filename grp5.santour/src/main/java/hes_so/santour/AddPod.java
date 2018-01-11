@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.PersistableBundle;
+import android.support.design.widget.TabLayout;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -31,15 +34,20 @@ import com.google.firebase.storage.StorageReference;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     private Button bSelectImage;
     private Button bTakeImage;
     private Button buploadImage;
-    private Button savePoi;
+    private Button savePod;
+    private Button saveDifficulties;
     private StorageReference storageReference;
     //a constant to track the file chooser intent
     private static final int PICK_IMAGE_REQUEST = 2;
@@ -58,7 +66,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
     private String encodedImage;
     private byte[] imageByte;
 
-
+    private List<Difficulty> difficulties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +79,13 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         bSelectImage = (Button) findViewById(R.id.choosePicture);
         bTakeImage = (Button) findViewById(R.id.takePicture);
-        savePoi = (Button) findViewById(R.id.savePOI);
+        savePod = (Button) findViewById(R.id.savePOD);
+
         imageView = (ImageView) findViewById(R.id.imageView);
 
         PoiName = (EditText) findViewById(R.id.poiName);
 
-
+        difficulties = new ArrayList<Difficulty>();
 
         //getting the GPS data from SanTour class
         if (savedInstanceState == null) {
@@ -111,8 +120,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     }
 
-
-
     //method to show file chooser
     private void showFileChooser() {
         Intent intent = new Intent();
@@ -131,9 +138,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
-
-
-
 
             /*Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
             imageView.setImageBitmap(bitmap);
@@ -191,7 +195,15 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }
     }*/
 
-
+    public void addDifficulty(Difficulty diff){
+        difficulties.add(diff);
+    }
+    public void removeDifficulty(Difficulty diff){
+        difficulties.remove(diff);
+    }
+    public void setDifficulty(int index, Difficulty diff){
+        difficulties.set(index,diff);
+    }
 
     public void onAddDifficultyClick(final View view) {
 
@@ -210,7 +222,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         final LinearLayout layout = (LinearLayout) mView.findViewById(R.id.PODcategLayout);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-
+        final List<Difficulty> selectedDiff= new ArrayList<Difficulty>();
 
         podCategRef.addListenerForSingleValueEvent(new ValueEventListener() {
             int i = 0;
@@ -221,7 +233,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
 
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
-                    CheckBox cb = new CheckBox(getApplicationContext());
+                    final CheckBox cb = new CheckBox(getApplicationContext());
                     cb.setId(i);
                     cb.setTag("cb" + i);
                     cb.setText(categ.getName());
@@ -229,14 +241,14 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                     cb.setPadding(0,40,0,40);
                     layout.addView(cb);
 
-                    DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
+                    final DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
+                    seek.setId(i);
                     seek.setTag("seek" + i);
                     seek.setMax(10);
+                    seek.setMin(1);
                     seek.setProgress(0);
                     seek.setVisibility(View.GONE);
-
                     layout.addView(seek);
-                    //podCategs.add(podCategs.size(),categ);
 
                     cb.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -245,15 +257,66 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                             CheckBox cb = (CheckBox) view;
                             DiscreteSeekBar seek = mView.findViewWithTag("seek" + cb.getId());
 
+                            String difName = cb.getText().toString();
+
                             if(!cb.isSelected()){
                                 cb.setSelected(true);
-
                                 seek.setVisibility(View.VISIBLE);
-                            }else{
-                                cb.setSelected(false);
+                                seek.setProgress(0);
 
+                                if(selectedDiff.size() == 0){
+                                    Difficulty newDiff = new Difficulty();
+                                    newDiff.setId(difName);
+                                    newDiff.setLevel(0);
+                                    selectedDiff.add(newDiff);
+                                }
+                                else {
+                                    for(int i = 0; i < selectedDiff.size(); i++){
+                                        if(!selectedDiff.get(i).getId().equals(difName)){
+                                            Difficulty newDiff = new Difficulty();
+                                            newDiff.setId(difName);
+                                            newDiff.setLevel(0);
+                                            selectedDiff.add(newDiff);
+                                        }
+                                    }
+                                }
+
+                            }else{
+
+                                cb.setSelected(false);
                                 seek.setVisibility(View.GONE);
+
+                                for(Difficulty diff : selectedDiff){
+                                    if(diff.getId().equals(difName)){
+                                        selectedDiff.remove(diff);
+                                        break;
+                                    }
+                                }
                             }
+
+                        }
+                    });
+
+                    seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                        @Override
+                        public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                            String difName = cb.getText().toString();
+                            Difficulty updatedDif = new Difficulty(difName,value);
+                            for(int i = 0; i < selectedDiff.size(); i++){
+                                if(selectedDiff.get(i).getId().equals(difName)){
+                                    selectedDiff.set(i,updatedDif);
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
 
                         }
                     });
@@ -298,13 +361,71 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddPod.this);
 
-        Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
+
 
         mBuilder.setView(mView);
-        AlertDialog dialog = mBuilder.create();
+        final AlertDialog dialog = mBuilder.create();
+
+        Button mSave = (Button) mView.findViewById(R.id.saveDifficulties);
+        Button mReset = (Button) mView.findViewById(R.id.cancelAction);
+
+        mSave.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                difficulties = selectedDiff;
+                Toast.makeText(getApplicationContext(),selectedDiff.get(0).getId(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),difficulties.get(0).getId(),Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+
+        mReset.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
 
+
+    public void onClick(View view) {
+        //if the clicked button is choose
+        if (view == bSelectImage) {
+            showFileChooser();
+        }
+        else if(view== bTakeImage){
+            takePhoto();
+        }
+
+        else if(view== savePod){
+            POD pod = new POD();
+            pod.setName(((TextView) findViewById(R.id.podName)).getText().toString());
+            pod.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
+            pod.setImage64(encodedImage);
+            pod.setByteArrayFromImage(imageByte);
+            pod.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
+            pod.setFilePath(filePath);
+
+            String diffText = "";
+            for(Difficulty diff : difficulties){
+                pod.addDifficulty(diff);
+                diffText += diff.getId();
+                Log.d(this.getClass().getName(),"HELLOOOO" + diffText);
+                Log.i(this.getClass().getName(),"HELLOOOO" + diffText);
+            }
+
+            LocalData.addPO(pod);
+            finish();
+            onBackPressed();
+        }
+
+    }
+
+    /*
     @Override
     public void onClick(View view) {
         //if the clicked button is choose
@@ -316,17 +437,19 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }
 
         else if(view== savePoi){
-            POI poi = new POI();
+            PO poi = new POI();
             poi.setName(((TextView) findViewById(R.id.poiName)).getText().toString());
             poi.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
-
+            poi.setImage64(encodedImage);
+            poi.setByteArrayFromImage(imageByte);
             poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
-            poi.setFilePath(filePath);
+            poi.setPOI(true);
             LocalData.addPO(poi);
             finish();
             onBackPressed();
         }
     }
+     */
 
     public String getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
@@ -419,4 +542,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }
 
     }
+
+
+
 }
