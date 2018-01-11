@@ -202,19 +202,17 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        // Get the layout inflater
-        LayoutInflater inflater = (this).getLayoutInflater();
-
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle("Confirm");
-        builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength() + "Nb POIs + Nb PODs");
+        builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength());
 
-        builder.setView(inflater.inflate(R.layout.dialog_save, null))
 
-        .setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
+
+        builder.setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
+
                 LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
                 LocalData.getTrack().setKmLength(distanceComplete / 1000);
                 LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
