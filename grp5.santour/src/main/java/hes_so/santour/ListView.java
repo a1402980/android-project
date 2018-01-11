@@ -62,11 +62,13 @@ public class ListView extends AppCompatActivity {
                     {
                         if (poList.get(i).isPOI()) {
                             LinearLayout ll =  (LinearLayout)((SwipeLayout)mListView.getChildAt(i)).getChildAt(1);
-                            ll.setBackgroundColor(Color.BLUE);
+                            //set color to blue
+                            ll.setBackgroundColor(Color.rgb(74, 33, 234));
                         }else
                         {
                            LinearLayout ll =  (LinearLayout)((SwipeLayout)mListView.getChildAt(i)).getChildAt(1);
-                           ll.setBackgroundColor(Color.RED);
+                           //set color to orange
+                           ll.setBackgroundColor(Color.rgb(191, 66, 44));
                         }
                     }
                 }
@@ -161,11 +163,10 @@ public class ListView extends AppCompatActivity {
         //Class fragmentClass;
         View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
-            case R.id.createTrack:
-                if (!active){
-                    buttonSanTourClick(v);
-                }
 
+            case R.id.createTrack:
+                Intent intentt = new Intent(this, SanTour.class);
+                startActivityForResult(intentt, PICK_CONTACT_REQUEST);
                 break;
 
             case R.id.createPOD:
