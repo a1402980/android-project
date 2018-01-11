@@ -61,6 +61,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private DrawerLayout dl;
     public int maxGPS;
     public int minGPS;
+    private int seconds = 0;
+    private int minutes = 0;
 
     //check if this activity is active
     static boolean active = false;
@@ -118,7 +120,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startTimer();
 
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
-//        nvDrawer.setCheckedItem(R.id.createTrack);
+        //nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
 
     }
@@ -201,6 +203,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
 
+
+
     public void buttonSaveTrackOnClick(View v) {
 
         //variables for validation
@@ -212,8 +216,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         //validate that the track is not too short and it has a title
         if ( TextUtils.isEmpty(trackTitle)){
             Toast.makeText(this, "Please enter the track name first!", Toast.LENGTH_SHORT).show();
+
         }else if(finalDistance < minDist){
-            Toast.makeText(this, "Your track must be over " + minDist + " KM, your track is currently " + finalDistance + " KM long!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Your track must be over " + minDist + " KM, your track is currently " +
+                    finalDistance + " KM long!", Toast.LENGTH_SHORT).show();
 
         } else{
 
@@ -244,25 +250,30 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
                 LocalData.getTrack().setKmLength(distanceComplete / 1000);
                 LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
-                LocalData.saveDataFirebase();
+
                 dialog.dismiss();
 
                 //check internet connection
                 if (!checkIfConnectedToInternet(SanTour.this)){
 
-                    Toast.makeText(SanTour.this, "No internet connection! Your track will be uploaded when you are connected to the internet!", Toast.LENGTH_SHORT).show();
+                    while(!checkIfConnectedToInternet(SanTour.this)) {
+                        Toast.makeText(SanTour.this, "No internet connection! Your track will be uploaded when " +
+                                "you are connected to the internet!", Toast.LENGTH_SHORT).show();
 
-                    //disable tracking until internet connection is connected
-                    Button startb = ((Button) findViewById(R.id.trackButton));
-                    ((Button) startb).setEnabled(false);
-                    ((Button) startb).setBackgroundColor(Color.LTGRAY);
+                        //disable tracking until internet connection is connected
+                        Button startb = ((Button) findViewById(R.id.trackButton));
+                        ((Button) startb).setEnabled(false);
+                        ((Button) startb).setBackgroundColor(Color.LTGRAY);
 
 
-                    tracking = false;
-                    LocalData.setTrackingFinished(true);
-                    LocalData.setTimerIsRunning(false);
+                        tracking = false;
+                        LocalData.setTrackingFinished(true);
+                        LocalData.setTimerIsRunning(false);
+                    }
 
                 }else{
+
+                    LocalData.saveDataFirebase();
 
                     //reset data
                     seconds = 0;
@@ -307,9 +318,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
 
-
-    private int seconds = 0;
-    private int minutes = 0;
 
     private void startTimer()
     {
@@ -558,7 +566,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             if (LocalData.getTrack().getTrackingPoints() != null) {
                 if (LocalData.getTrack().getTrackingPoints().size()>1)
                 {
-                    distance = distFrom(loc.getLatitude(), loc.getLongitude(), LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).latitude, LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).longitude);
+                    distance = distFrom(loc.getLatitude(), loc.getLongitude(),
+                            LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).latitude,
+                            LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).longitude);
                 }else {
                     distance = 15;
                 }
@@ -788,7 +798,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 updateView(location);
             }
-
         }
 
         @Override
