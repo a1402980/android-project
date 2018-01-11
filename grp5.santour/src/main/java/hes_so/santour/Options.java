@@ -124,11 +124,11 @@ public class Options extends AppCompatActivity {
                 break;
 
             case R.id.createPOD:
-                //buttonAddPODOnClick(v);
+                buttonAddPODOnClick(v);
                 break;
 
             case R.id.createPOI:
-                //buttonAddPOIOnClick(v);
+                buttonAddPOIOnClick(v);
                 break;
 
             case R.id.POIPODlist:
@@ -158,6 +158,26 @@ public class Options extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void buttonAddPOIOnClick(View v) {
+        LocalData.setTimerIsRunning(false);
+        Intent intent = new Intent(Options.this, AddPoi.class);
+        String longitude = LocalData.getActuellLongitute();
+        String latitude = LocalData.getActuellLangitude();
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
+    }
+
+    public void buttonAddPODOnClick(View v) {
+        LocalData.setTimerIsRunning(false);
+        Intent intent = new Intent(Options.this, AddPod.class);
+        String longitude = LocalData.getActuellLongitute();
+        String latitude = LocalData.getActuellLangitude();
+        intent.putExtra("longitudeData", longitude);
+        intent.putExtra("latitudeData", latitude);
+        startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
 
 
