@@ -512,6 +512,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
     */
 
     public void cancelOnClick(View v) {
+        LocalData.setTimerIsRunning(true);
         finish();
         onBackPressed();
     }

@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -58,6 +61,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private DrawerLayout dl;
     public int maxGPS;
     public int minGPS;
+    private int seconds = 0;
+    private int minutes = 0;
 
     //check if this activity is active
     static boolean active = false;
@@ -115,7 +120,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startTimer();
 
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
-//        nvDrawer.setCheckedItem(R.id.createTrack);
+        //nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
 
     }
@@ -198,49 +203,138 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
 
+
+
     public void buttonSaveTrackOnClick(View v) {
 
+        //variables for validation
+        String trackTitle = ((TextView) findViewById(R.id.txtTrackName)).getText().toString();
+        double finalDistance = Double.parseDouble(String.format("%.4f", distanceComplete/1000));
+        double minDist = 0.1;
+
+
+        //validate that the track is not too short and it has a title
+        if ( TextUtils.isEmpty(trackTitle)){
+            Toast.makeText(this, "Please enter the track name first!", Toast.LENGTH_SHORT).show();
+
+        }else if(finalDistance < minDist){
+            Toast.makeText(this, "Your track must be over " + minDist + " KM, your track is currently " +
+                    finalDistance + " KM long!", Toast.LENGTH_SHORT).show();
+
+        } else{
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String Distance = String.format("%.4f", distanceComplete/1000);
+        String Time = minutes + ":" + seconds;
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle("Confirm");
-        builder.setMessage("Overview of the track " + LocalData.getTrack().getKmLength());
+        builder.setMessage("Overview of the track:\n\nTrack name: "+trackTitle+"\nDistance: " + Distance + " KM\nDuration: " + Time);
 
 
 
-        builder.setPositiveButton("Save track and upload", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Save and Upload", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
+
+
+                //Stop the timer
+
+                LocalData.setTimerIsRunning(false);
+
+
+                double Lat = Double.parseDouble(LocalData.getActuellLangitude());
+                double Lng = Double.parseDouble(LocalData.getActuellLongitute());
+                LatLng startMarker = new LatLng(Lat, Lng);
+                mMap.addMarker(new MarkerOptions().position(startMarker)
+                        .title("End point")
+                        //setting the color
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                 LocalData.getTrack().setName(((TextView) findViewById(R.id.txtTrackName)).getText().toString());
                 LocalData.getTrack().setKmLength(distanceComplete / 1000);
                 LocalData.getTrack().setTimeDuration(((TextView) findViewById(R.id.timeTextView)).getText().toString());
-                LocalData.saveDataFirebase();
-                dialog.dismiss();
 
 
-                seconds = 0;
-                minutes = 0;
-                distanceComplete = 0;
 
-                ((TextView) findViewById(R.id.txtTrackName)).setText("");
-                updateTime();
-                LocalData.setTimerIsRunning(false);
-                longitudeField.setText("");
-                latitudeField.setText("");
-                ((TextView)findViewById(R.id.distanceTextView)).setText("0");
-                LocalData.getTrack().setName(null);
-                LocalData.getTrack().setKmLength(0);
-                LocalData.getTrack().setTimeDuration(null);
+                //check internet connection
+                if (!checkIfConnectedToInternet(SanTour.this)){
 
-                Button start = ((Button) findViewById(R.id.trackButton));
-                ((Button) start).setText("Start");
-                ((Button) start).setBackgroundColor(Color.argb(99, 173, 234, 0));
+                    Toast.makeText(SanTour.this, "No internet connection! Your track will be uploaded when " +
+                            "you are connected to the internet!", Toast.LENGTH_SHORT).show();
+
+                    //disable tracking until internet connection is connected
+                    Button startb = ((Button) findViewById(R.id.trackButton));
+                    ((Button) startb).setEnabled(false);
+                    ((Button) startb).setBackgroundColor(Color.LTGRAY);
+
+                    //Until the check connection gives true, tracking is blocked
+                    while(!checkIfConnectedToInternet(SanTour.this)) {
+
+                        tracking = false;
+                        LocalData.setTrackingFinished(true);
+
+                    }
+
+                    LocalData.saveDataFirebase();
+
+
+                    //reset data
+                    seconds = 0;
+                    minutes = 0;
+                    distanceComplete = 0;
+                    mMap.clear();
+
+
+                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                    updateTime();
+                    LocalData.setTimerIsRunning(false);
+                    longitudeField.setText("");
+                    latitudeField.setText("");
+                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
+                    LocalData.getTrack().setName(null);
+                    LocalData.getTrack().setKmLength(0);
+                    LocalData.getTrack().setTimeDuration(null);
+
+                    Button start = ((Button) findViewById(R.id.trackButton));
+                    ((Button) start).setText("Start");
+                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
+
+                    dialog.dismiss();
+
+                }else{
+
+                    LocalData.saveDataFirebase();
+
+                    //reset data
+                    seconds = 0;
+                    minutes = 0;
+                    distanceComplete = 0;
+                    mMap.clear();
+
+
+                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                    updateTime();
+                    longitudeField.setText("");
+                    latitudeField.setText("");
+                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
+                    LocalData.getTrack().setName(null);
+                    LocalData.getTrack().setKmLength(0);
+                    LocalData.getTrack().setTimeDuration(null);
+
+                    Button start = ((Button) findViewById(R.id.trackButton));
+                    ((Button) start).setText("Start");
+                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
+
+                    dialog.dismiss();
+                }
+
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -251,14 +345,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         AlertDialog alert = builder.create();
         alert.show();
+        }
     }
 
 
 
 
-
-    private int seconds = 0;
-    private int minutes = 0;
 
     private void startTimer()
     {
@@ -369,7 +461,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
             Button button = (Button) v;
             ((Button) v).setText("Pause");
-            ((Button) v).setBackgroundColor(Color.argb(99, 234, 6, 0));
+            ((Button) v).setBackgroundColor(Color.parseColor("#E12637"));
 
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
@@ -379,7 +471,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             LocalData.setTimerIsRunning(false);
             Button button = (Button) v;
             ((Button) v).setText("Resume");
-            ((Button) v).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            ((Button) v).setBackgroundColor(Color.parseColor("#55a543"));
 
 
         }
@@ -507,7 +599,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             if (LocalData.getTrack().getTrackingPoints() != null) {
                 if (LocalData.getTrack().getTrackingPoints().size()>1)
                 {
-                    distance = distFrom(loc.getLatitude(), loc.getLongitude(), LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).latitude, LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).longitude);
+                    distance = distFrom(loc.getLatitude(), loc.getLongitude(),
+                            LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).latitude,
+                            LocalData.getTrack().getTrackingPoints().get(LocalData.getTrack().getTrackingPoints().size() - 1).longitude);
                 }else {
                     distance = 15;
                 }
@@ -631,14 +725,37 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         Button button =  findViewById(R.id.trackButton);
         if (LocalData.isTimerIsRunning()) {
             ((Button) button).setText("Pause");
-            ((Button) button).setBackgroundColor(Color.argb(99, 234, 6, 0));
+            ((Button) button).setBackgroundColor(Color.parseColor("#E12637"));
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
         }else
         {
             ((Button) button).setText("Start");
-            ((Button) button).setBackgroundColor(Color.argb(99, 173, 234, 0));
+            ((Button) button).setBackgroundColor(Color.parseColor("#55a543"));
         }
+
+        if (LocalData.isTrackingFinished()){
+            //disable tracking until internet connection is connected
+            ((Button) button).setEnabled(false);
+            ((Button) button).setBackgroundColor(Color.LTGRAY);
+
+            //show finish track button if tracking is finished
+            Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
+            saveTrackButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+
+    public boolean checkIfConnectedToInternet(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
 
     }
 
@@ -675,6 +792,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
             updateView(null);
+
+
     }
 
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -712,7 +831,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
                 updateView(location);
             }
-
         }
 
         @Override
