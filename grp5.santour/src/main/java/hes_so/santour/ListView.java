@@ -162,9 +162,9 @@ public class ListView extends AppCompatActivity {
         View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
-
-                   finish();
-
+                if (!active){
+                    buttonSanTourClick(v);
+                }
 
                 break;
 
@@ -178,8 +178,15 @@ public class ListView extends AppCompatActivity {
 
             case R.id.POIPODlist:
 
-
+                Intent intent = new Intent(this, ListView.class);
+                startActivityForResult(intent, PICK_CONTACT_REQUEST);
                 break;
+
+            case R.id.Options:
+                Intent intent2 = new Intent(this, Options.class);
+                startActivityForResult(intent2, PICK_CONTACT_REQUEST);
+                break;
+
 
             default:
                 buttonSanTourClick(v);
@@ -187,6 +194,15 @@ public class ListView extends AppCompatActivity {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
+    }
+    private void drawerSetup(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectItemDrawer(item);
+                return true;
+            }
+        });
     }
 
 
@@ -217,15 +233,6 @@ public class ListView extends AppCompatActivity {
     }
 
 
-    private void drawerSetup(NavigationView navigationView){
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectItemDrawer(item);
-                return true;
-            }
-        });
-    }
 
     private void refreshData(List<PO> poList) {
         String[] adapterData = new String[poList.size()];

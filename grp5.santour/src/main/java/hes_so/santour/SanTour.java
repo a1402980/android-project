@@ -117,7 +117,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         startTimer();
 
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.navigation);
-        nvDrawer.setCheckedItem(R.id.createTrack);
+//        nvDrawer.setCheckedItem(R.id.createTrack);
         drawerSetup(nvDrawer);
 
     }
@@ -597,7 +597,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             }
         }
         TextView tvDistance = findViewById(R.id.distanceTextView);
-        tvDistance.setText(String.format("%.1f", distanceComplete));
+        tvDistance.setText(String.format("%.4f", distanceComplete/1000));
     }
 
     //Help https://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
@@ -634,8 +634,10 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         Button button =  findViewById(R.id.trackButton);
         if (LocalData.isTimerIsRunning()) {
-            ((Button) button).setText("Stop");
+            ((Button) button).setText("Pause");
             ((Button) button).setBackgroundColor(Color.argb(99, 234, 6, 0));
+            Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
+            saveTrackButton.setVisibility(View.VISIBLE);
         }else
         {
             ((Button) button).setText("Start");
