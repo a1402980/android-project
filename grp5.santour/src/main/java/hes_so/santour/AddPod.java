@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.PersistableBundle;
+import android.util.Base64;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.io.IOException;
 
@@ -52,6 +54,10 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     private float longitudeDataInt;
     private float latitudeDataInt;
+
+    private String encodedImage;
+    private byte[] imageByte;
+
 
 
     @Override
@@ -115,8 +121,51 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
-
     //handling the image chooser activity result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==0 && resultCode == RESULT_OK){
+
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+
+
+
+
+            /*Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
+            imageView.setImageBitmap(bitmap);
+*/
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] bytesForImage = baos.toByteArray();
+            imageByte = bytesForImage;
+            encodedImage = Base64.encodeToString(bytesForImage, Base64.DEFAULT);
+
+        }
+
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imageView.setImageBitmap(bitmap);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                byte[] bytesForImage = baos.toByteArray();
+                imageByte = bytesForImage;
+                encodedImage = Base64.encodeToString(bytesForImage, Base64.DEFAULT);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+/*    //handling the image chooser activity result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -140,7 +189,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 
 
