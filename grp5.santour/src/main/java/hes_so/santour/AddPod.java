@@ -106,8 +106,13 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                 latitudeData = extras.getString("latitudeData");
                 /*longitudeDataInt = extras.getFloat("longitudeData");
                 latitudeDataInt = extras.getFloat("latitudeData");*/
-                longitudeDataInt = Float.parseFloat(longitudeData);
-                latitudeDataInt = Float.parseFloat(latitudeData);
+                try{
+                    longitudeDataInt = Float.parseFloat(longitudeData);
+                    latitudeDataInt = Float.parseFloat(latitudeData);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         } else {
             latitudeData = (String) savedInstanceState.getSerializable("longitudeData");

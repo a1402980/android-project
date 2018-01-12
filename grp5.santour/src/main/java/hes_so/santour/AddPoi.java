@@ -73,10 +73,15 @@ public class AddPoi extends AppCompatActivity implements View.OnClickListener{
                 longitudeData = null;
                 latitudeData = null;
             } else {
-                longitudeData = extras.getString("longitudeData");
-                latitudeData = extras.getString("latitudeData");
-                longitudeDataInt = Float.parseFloat(longitudeData);
-                latitudeDataInt = Float.parseFloat(latitudeData);
+                try{
+                    longitudeData = extras.getString("longitudeData");
+                    latitudeData = extras.getString("latitudeData");
+                    longitudeDataInt = Float.parseFloat(longitudeData);
+                    latitudeDataInt = Float.parseFloat(latitudeData);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         } else {
             latitudeData = (String) savedInstanceState.getSerializable("longitudeData");
