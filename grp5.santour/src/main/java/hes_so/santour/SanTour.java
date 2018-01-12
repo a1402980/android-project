@@ -709,8 +709,14 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
         minutes = savedInstanceState.getInt("MINUTES_INT");
         seconds = savedInstanceState.getInt("SECONDES_INT");
+
+
+
         LocalData.setTimerIsRunning(savedInstanceState.getBoolean("ISTIMERRUNNING"));
         distanceComplete = savedInstanceState.getFloat("DISTANCE_FLOAT");
+        ((TextView) findViewById(R.id.TextView02)).setText(savedInstanceState.getString("LANGITUDE_FLOAT"));
+        ((TextView) findViewById(R.id.TextView04)).setText(savedInstanceState.getString("LONGITUDE_FLOAT"));
+        ((TextView) findViewById(R.id.distanceTextView)).setText(String.format("%.4f", savedInstanceState.getFloat("DISTANCE_FLOAT")/1000));
         startTimer();
 
         Button button =  findViewById(R.id.trackButton);
@@ -778,6 +784,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         outState.putFloat("DISTANCE_FLOAT", distanceComplete);
         outState.putInt("MINUTES_INT", minutes);
         outState.putInt("SECONDES_INT", seconds);
+        outState.putString("LONGITUDE_FLOAT", longitudeField.getText().toString());
+        outState.putString("LANGITUDE_FLOAT", longitudeField.getText().toString());
         outState.putBoolean("ISTIMERRUNNING", LocalData.isTimerIsRunning());
         startTimer();
 
