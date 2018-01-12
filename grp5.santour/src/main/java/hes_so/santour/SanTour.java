@@ -243,11 +243,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 //Stop the timer
 
                 LocalData.setTimerIsRunning(false);
-
+                LocalData.setTrackingFinished(true);
 
                 double Lat = Double.parseDouble(LocalData.getActuellLangitude());
                 double Lng = Double.parseDouble(LocalData.getActuellLongitute());
                 LatLng startMarker = new LatLng(Lat, Lng);
+
                 mMap.addMarker(new MarkerOptions().position(startMarker)
                         .title("End point")
                         //setting the color
@@ -270,43 +271,12 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     ((Button) startb).setEnabled(false);
                     ((Button) startb).setBackgroundColor(Color.LTGRAY);
                     dialog.dismiss();
-                    LocalData.setTrackingFinished(true);
 
-                    //Until the check connection gives true, tracking is blocked
-//                    while(!checkIfConnectedToInternet(SanTour.this)) {
-//
-//                        tracking = false;
-//                        LocalData.setTrackingFinished(true);
-//
-//                    }
 
- //                   uploadTrack();
-                        reconnectInternet();
-
+                    reconnectInternet();
 
                 }else{
                     uploadTrack();
-//                    LocalData.saveDataFirebase();
-//
-//                    //reset data
-//                    seconds = 0;
-//                    minutes = 0;
-//                    distanceComplete = 0;
-//                    mMap.clear();
-//
-//
-//                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
-//                    updateTime();
-//                    longitudeField.setText("");
-//                    latitudeField.setText("");
-//                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
-//                    LocalData.getTrack().setName(null);
-//                    LocalData.getTrack().setKmLength(0);
-//                    LocalData.getTrack().setTimeDuration(null);
-//
-//                    Button start = ((Button) findViewById(R.id.trackButton));
-//                    ((Button) start).setText("Start");
-//                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
 
                 }
 
@@ -343,7 +313,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         Log.i(TAG, "*****TRACK UPLOADED*****");
 
-        //reset data
+        //reset data in class
         seconds = 0;
         minutes = 0;
         distanceComplete = 0;
@@ -355,6 +325,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             @Override
             public void run()
             {
+                Toast.makeText(activity, "Track uploaded!", Toast.LENGTH_SHORT).show();
+
+                //clear map data
                 mMap.clear();
 
                 //reset view
@@ -373,10 +346,18 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                 ((Button) start).setText("Start");
                 ((Button) start).setEnabled(true);
                 ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
+
+                //hide the finish track button
+                Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
+                saveTrackButton.setVisibility(View.GONE);
+
+
             }
+
         });
+        LocalData.setTrack(null);
 
-
+        tracking = false;
 
         //tracking is reset and you can start tracking a new track
         LocalData.setTrackingFinished(false);
@@ -384,24 +365,29 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
 
-    private void reconnectInternet(){
-        if (ti == null) {
-            //Declare the timer
-            ti = new Timer();
-            //Set the schedule function and rate
-            ti.scheduleAtFixedRate(new TimerTask() {
+    private void reconnectInternet() {
 
-                @Override
-                public void run() {
-                    Log.i(TAG, "Reconnectiong...");
-                    if (checkIfConnectedToInternet(SanTour.this)){
-                        Log.i(TAG, "Reconnected!");
-                        uploadTrack();
+            if (ti == null) {
+                //Declare the timer
+                ti = new Timer();
+                //Set the schedule function and rate
+                ti.scheduleAtFixedRate(new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        //try to reconnect to internet after losing connection
+                        if (LocalData.isTrackingFinished()) {
+                            Log.i(TAG, "Reconnectiong...");
+                            if (checkIfConnectedToInternet(SanTour.this)) {
+                                Log.i(TAG, "Reconnected!");
+                                uploadTrack();
+                            }
+                        }
                     }
-                }
 
-            }, 0, 10000); //run every minute
-        }
+                }, 0, 10000); //run every minute
+            }
+
     }
 
 
