@@ -152,48 +152,7 @@ public class LocalData {
             }
         });
 
-
-        /*StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-            try {
-                UploadTask uploadTask = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg").putFile(fileUri);
-            } catch (Exception e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        StorageReference riversRef = storageReference.child("/images/" + trackName + "/" + poName + "/" + getCurrentDate() + ".jpg");
-        riversRef.putFile(fileUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //if the upload is successfull
-                        //hiding the progress dialog
-
-                        //and displaying a success toast
-                        //Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        //if the upload is not successfull
-                        //hiding the progress dialog
-
-                        //and displaying error message
-                        //Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        //calculating progress percentage
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                        //displaying percentage in progress dialog
-                    }
-                });
-
-*/
+        
     }
 
     public static String getCurrentDate() {
