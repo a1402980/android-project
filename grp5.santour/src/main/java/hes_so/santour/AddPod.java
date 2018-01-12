@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -213,6 +214,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                 for (DataSnapshot podCategSnap : dataSnapshot.getChildren()){
 
+
                     PODcategory categ = podCategSnap.getValue(PODcategory.class);
                     final CheckBox cb = new CheckBox(getApplicationContext());
                     cb.setId(i);
@@ -221,6 +223,15 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                     cb.setTextColor(Color.BLACK);
                     cb.setPadding(0,40,0,40);
                     layout.addView(cb);
+
+                    final TextView seekValueTxt = new TextView(getApplicationContext());
+                    seekValueTxt.setId(i);
+                    seekValueTxt.setTag("seekTxt" + i);
+                    seekValueTxt.setText("Level : ");
+                    seekValueTxt.setTextSize(20);
+                    seekValueTxt.setTextColor(Color.BLACK);
+                    seekValueTxt.setVisibility(View.GONE);
+                    layout.addView(seekValueTxt);
 
                     final DiscreteSeekBar seek = new DiscreteSeekBar(getApplicationContext(),null, R.style.Widget_AppCompat_SeekBar_Discrete);
                     seek.setId(i);
@@ -237,12 +248,14 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                             CheckBox cb = (CheckBox) view;
                             DiscreteSeekBar seek = mView.findViewWithTag("seek" + cb.getId());
+                            TextView seekTxt = mView.findViewWithTag("seekTxt" + cb.getId());
 
                             String difName = cb.getText().toString();
 
                             if(!cb.isSelected()){
                                 cb.setSelected(true);
                                 seek.setVisibility(View.VISIBLE);
+                                seekTxt.setVisibility(View.VISIBLE);
                                 seek.setProgress(0);
 
                                 if(selectedDiff.size() == 0){
@@ -266,6 +279,8 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
                                 cb.setSelected(false);
                                 seek.setVisibility(View.GONE);
+                                seekTxt.setVisibility(View.GONE);
+                                seekTxt.setText("Level : ");
 
                                 for(Difficulty diff : selectedDiff){
                                     if(diff.getId().equals(difName)){
@@ -283,12 +298,15 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
                         public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                             String difName = cb.getText().toString();
                             Difficulty updatedDif = new Difficulty(difName,value);
+                            TextView seekTxt = mView.findViewWithTag("seekTxt" + cb.getId());
                             for(int i = 0; i < selectedDiff.size(); i++){
                                 if(selectedDiff.get(i).getId().equals(difName)){
                                     selectedDiff.set(i,updatedDif);
+                                    seekTxt.setText("Level : " + Integer.toString(value));
                                     break;
                                 }
                             }
+
                         }
 
                         @Override

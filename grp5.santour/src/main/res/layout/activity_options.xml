@@ -39,6 +39,14 @@
                     android:checked="true"
                     android:text="Default" />
 
+                <TextView
+                    android:id="@+id/txtMinValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:text="Value : 10" />
+
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/GPSmin"
                     android:layout_width="match_parent"
@@ -49,7 +57,7 @@
                     app:dsb_max="50"
                     />
 
-                <TextView
+                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,6 +71,14 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Default" />
+
+                <TextView
+                    android:id="@+id/txtMaxValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:text="Value : 40" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/GPSmax"

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
@@ -41,6 +42,9 @@ public class Options extends AppCompatActivity {
         final CheckBox maxCb = (CheckBox)findViewById(R.id.GPSmaxCheckbox);
         final DiscreteSeekBar minSeek = (DiscreteSeekBar)findViewById(R.id.GPSmin);
         final DiscreteSeekBar maxSeek = (DiscreteSeekBar)findViewById(R.id.GPSmax);
+        final TextView minTxt = (TextView)findViewById(R.id.txtMinValue);
+        final TextView maxTxt = (TextView)findViewById(R.id.txtMaxValue);
+
 
         Button saveButton = (Button)findViewById(R.id.saveOptions);
 
@@ -49,7 +53,6 @@ public class Options extends AppCompatActivity {
             minCb.setChecked(false);
             minSeek.setVisibility(View.VISIBLE);
             minSeek.setProgress(minGPS);
-
         }
 
         if (maxGPS != 0){
@@ -64,6 +67,7 @@ public class Options extends AppCompatActivity {
                 final boolean isChecked = minCb.isChecked();
                 if (isChecked == true){
                     minSeek.setVisibility(View.GONE);
+                    minTxt.setText("Value : " + 10);
                 }else{
                     minSeek.setVisibility(View.VISIBLE);
                 }
@@ -78,6 +82,7 @@ public class Options extends AppCompatActivity {
                 final boolean isChecked = maxCb.isChecked();
                 if (isChecked == true){
                     maxSeek.setVisibility(View.GONE);
+                    maxTxt.setText("Value : " + 40);
                 }else{
                     maxSeek.setVisibility(View.VISIBLE);
                 }
@@ -104,6 +109,40 @@ public class Options extends AppCompatActivity {
                 }
 
                 Toast.makeText(Options.this, "Options saved!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        minSeek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                minTxt.setText("Value : " + value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
+
+        maxSeek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                maxTxt.setText("Value : " + value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
 
             }
         });
