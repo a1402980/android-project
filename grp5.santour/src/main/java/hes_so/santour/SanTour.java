@@ -1,5 +1,6 @@
 package hes_so.santour;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -58,6 +59,7 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
     private boolean tracking;
     private boolean startPoint;
     private Timer t;
+    private Timer ti;
     private DrawerLayout dl;
     public int maxGPS;
     public int minGPS;
@@ -269,66 +271,45 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
                     Button startb = ((Button) findViewById(R.id.trackButton));
                     ((Button) startb).setEnabled(false);
                     ((Button) startb).setBackgroundColor(Color.LTGRAY);
+                    dialog.dismiss();
+                    LocalData.setTrackingFinished(true);
 
                     //Until the check connection gives true, tracking is blocked
-                    while(!checkIfConnectedToInternet(SanTour.this)) {
+//                    while(!checkIfConnectedToInternet(SanTour.this)) {
+//
+//                        tracking = false;
+//                        LocalData.setTrackingFinished(true);
+//
+//                    }
 
-                        tracking = false;
-                        LocalData.setTrackingFinished(true);
+ //                   uploadTrack();
+                        reconnectInternet();
 
-                    }
-
-                    LocalData.saveDataFirebase();
-
-
-                    //reset data
-                    seconds = 0;
-                    minutes = 0;
-                    distanceComplete = 0;
-                    mMap.clear();
-
-
-                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
-                    updateTime();
-                    LocalData.setTimerIsRunning(false);
-                    longitudeField.setText("");
-                    latitudeField.setText("");
-                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
-                    LocalData.getTrack().setName(null);
-                    LocalData.getTrack().setKmLength(0);
-                    LocalData.getTrack().setTimeDuration(null);
-
-                    Button start = ((Button) findViewById(R.id.trackButton));
-                    ((Button) start).setText("Start");
-                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
-
-                    dialog.dismiss();
 
                 }else{
+                    uploadTrack();
+//                    LocalData.saveDataFirebase();
+//
+//                    //reset data
+//                    seconds = 0;
+//                    minutes = 0;
+//                    distanceComplete = 0;
+//                    mMap.clear();
+//
+//
+//                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
+//                    updateTime();
+//                    longitudeField.setText("");
+//                    latitudeField.setText("");
+//                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
+//                    LocalData.getTrack().setName(null);
+//                    LocalData.getTrack().setKmLength(0);
+//                    LocalData.getTrack().setTimeDuration(null);
+//
+//                    Button start = ((Button) findViewById(R.id.trackButton));
+//                    ((Button) start).setText("Start");
+//                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
 
-                    LocalData.saveDataFirebase();
-
-                    //reset data
-                    seconds = 0;
-                    minutes = 0;
-                    distanceComplete = 0;
-                    mMap.clear();
-
-
-                    ((TextView) findViewById(R.id.txtTrackName)).setText("");
-                    updateTime();
-                    longitudeField.setText("");
-                    latitudeField.setText("");
-                    ((TextView)findViewById(R.id.distanceTextView)).setText("0");
-                    LocalData.getTrack().setName(null);
-                    LocalData.getTrack().setKmLength(0);
-                    LocalData.getTrack().setTimeDuration(null);
-
-                    Button start = ((Button) findViewById(R.id.trackButton));
-                    ((Button) start).setText("Start");
-                    ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
-
-                    dialog.dismiss();
                 }
 
             }
@@ -350,6 +331,80 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
 
 
+
+
+
+    private void uploadTrack(){
+
+        try {
+            LocalData.saveDataFirebase();
+        } catch (Exception e) {
+            Log.i(TAG, "Error!");
+
+        }
+
+        Log.i(TAG, "*****TRACK UPLOADED*****");
+
+        //reset data
+        seconds = 0;
+        minutes = 0;
+        distanceComplete = 0;
+
+        final Activity activity = SanTour.this;
+
+        activity.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mMap.clear();
+
+                //reset view
+                ((TextView) findViewById(R.id.txtTrackName)).setText("");
+                updateTime();
+                LocalData.setTimerIsRunning(false);
+                longitudeField.setText("");
+                latitudeField.setText("");
+                ((TextView)findViewById(R.id.distanceTextView)).setText("0");
+                LocalData.getTrack().setName(null);
+                LocalData.getTrack().setKmLength(0);
+                LocalData.getTrack().setTimeDuration(null);
+
+                //make sure that tracking button is reset
+                Button start = ((Button) findViewById(R.id.trackButton));
+                ((Button) start).setText("Start");
+                ((Button) start).setEnabled(true);
+                ((Button) start).setBackgroundColor(Color.parseColor("#55a543"));
+            }
+        });
+
+
+
+        //tracking is reset and you can start tracking a new track
+        LocalData.setTrackingFinished(false);
+    }
+
+
+
+    private void reconnectInternet(){
+        if (ti == null) {
+            //Declare the timer
+            ti = new Timer();
+            //Set the schedule function and rate
+            ti.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+                    Log.i(TAG, "Reconnectiong...");
+                    if (checkIfConnectedToInternet(SanTour.this)){
+                        Log.i(TAG, "Reconnected!");
+                        uploadTrack();
+                    }
+                }
+
+            }, 0, 10000); //run every minute
+        }
+    }
 
 
     private void startTimer()
@@ -742,6 +797,9 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
             //show finish track button if tracking is finished
             Button saveTrackButton = ((Button) findViewById(R.id.saveTrack));
             saveTrackButton.setVisibility(View.VISIBLE);
+
+            //try to reconnect to the internet
+            reconnectInternet();
         }
     }
 

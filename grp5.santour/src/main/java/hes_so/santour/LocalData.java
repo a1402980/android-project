@@ -151,7 +151,7 @@ public class LocalData {
             for (PO po: poList) {
                     savePicture(po.getByteArrayFromImage(), sc.getTrack().getName(), po.getName());
             }
-        //Add Save Pictures here later
+
     }
 
 
