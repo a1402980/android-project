@@ -158,25 +158,29 @@ public class Options extends AppCompatActivity {
         View v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
-                Intent intent = new Intent(this, SanTour.class);
-                startActivityForResult(intent, PICK_CONTACT_REQUEST);
+                finish();
+//                Intent intent = new Intent(this, SanTour.class);
+//                startActivityForResult(intent, PICK_CONTACT_REQUEST);
                 break;
 
             case R.id.createPOD:
+                finish();
                 buttonAddPODOnClick(v);
                 break;
 
             case R.id.createPOI:
+                finish();
                 buttonAddPOIOnClick(v);
                 break;
 
             case R.id.POIPODlist:
-
+                finish();
                 Intent intent1 = new Intent(this, ListView.class);
                 startActivityForResult(intent1, PICK_CONTACT_REQUEST);
                 break;
 
             case R.id.Options:
+                finish();
                 Intent intent2 = new Intent(this, Options.class);
                 startActivityForResult(intent2, PICK_CONTACT_REQUEST);
                 break;
