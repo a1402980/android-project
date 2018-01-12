@@ -128,8 +128,8 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
    public void selectItemDrawer(MenuItem menuItem){
         Fragment myFragment = null;
-        //Class fragmentClass;
-       View  v = this.findViewById(android.R.id.content).getRootView();
+
+        View  v = this.findViewById(android.R.id.content).getRootView();
         switch (menuItem.getItemId()){
             case R.id.createTrack:
                 if (!active){
@@ -202,8 +202,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         intent.putExtra("latitudeData", latitude);
         startActivityForResult(intent, PICK_CONTACT_REQUEST);
     }
-
-
 
     public void buttonSaveTrackOnClick(View v) {
 
@@ -452,8 +450,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         
     }
 
-
-
     public void buttonOnClick(View v) {
         if (tracking != true){
             tracking = true;
@@ -476,7 +472,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
 
         }
 
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //Toast.makeText(this, "Going yo your location...", Toast.LENGTH_LONG).show();
 
@@ -496,9 +491,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         return strDate;
 
     }
-
-
-
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -533,7 +525,6 @@ public class SanTour extends FragmentActivity implements GoogleMap.OnMyLocationB
         }
 
     }
-
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
