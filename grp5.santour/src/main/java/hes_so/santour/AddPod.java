@@ -41,6 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class will manage the display and the actions on the "Add POD" view.
+ **/
 public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     private Button bSelectImage;
@@ -68,6 +71,10 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     private List<Difficulty> difficulties;
 
+    /**
+     * This method is executed when the Add POD view is created and loaded
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,12 +103,16 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             } else {
                 longitudeData = extras.getString("longitudeData");
                 latitudeData = extras.getString("latitudeData");
-                longitudeDataInt = extras.getFloat("longitudeData");
-                latitudeDataInt = extras.getFloat("latitudeData");
+                /*longitudeDataInt = extras.getFloat("longitudeData");
+                latitudeDataInt = extras.getFloat("latitudeData");*/
+                longitudeDataInt = Float.parseFloat(longitudeData);
+                latitudeDataInt = Float.parseFloat(latitudeData);
             }
         } else {
             latitudeData = (String) savedInstanceState.getSerializable("longitudeData");
             longitudeData = (String) savedInstanceState.getSerializable("latitudeData");
+            longitudeDataInt = Float.parseFloat(longitudeData);
+            latitudeDataInt = Float.parseFloat(latitudeData);
         }
 
         //show the text data on the page
@@ -114,13 +125,18 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
     }
 
+    /**
+     * Method to launch the camera to take a photo for POD
+     */
     public void takePhoto() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, 0);
 
     }
 
-    //method to show file chooser
+    /**
+     * Method to show file chooser to upload an image from device gallery
+     */
     private void showFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -128,7 +144,12 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
-    //handling the image chooser activity result
+    /**
+     *  Method to handle the image chooser activity result
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -139,9 +160,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
 
-            /*Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
-            imageView.setImageBitmap(bitmap);
-*/
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
             byte[] bytesForImage = baos.toByteArray();
@@ -169,41 +187,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }
     }
 
-/*    //handling the image chooser activity result
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        if (requestCode==0 && resultCode == RESULT_OK){
-            //     filePath = imageReturnedIntent.getData();
-
-            Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("imageReturnedIntent");
-            imageView.setImageBitmap(bitmap);
-
-        }
-
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            filePath = imageReturnedIntent.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                imageView.setImageBitmap(bitmap);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
-
-    public void addDifficulty(Difficulty diff){
-        difficulties.add(diff);
-    }
-    public void removeDifficulty(Difficulty diff){
-        difficulties.remove(diff);
-    }
-    public void setDifficulty(int index, Difficulty diff){
-        difficulties.set(index,diff);
-    }
 
     public void onAddDifficultyClick(final View view) {
 
@@ -214,8 +197,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         podCategRef = mdatabase.getReference("PODcategory");
 
         connectedRef = mdatabase.getReference(".info/connected");
-
-        //List<PODcategory> podCategs = new ArrayList<PODcategory>();
 
         final View mView = getLayoutInflater().inflate(R.layout.dialog_difficulties, null);
 
@@ -333,35 +314,7 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             }
         });
 
-        /*connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean connected = dataSnapshot.getValue(Boolean.class);
-
-                if(connected){
-                    Toast.makeText(getApplicationContext(),"Getting POD categories...", Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(getApplicationContext(),"No Internet connection", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-        //Log.e("POD categories: ", String.valueOf(podCategs.size()));
-        /*for(PODcategory podCateg : podCategs){
-
-            CheckBox cb = new CheckBox(this);
-            cb.setText(podCateg.getName());
-            layout.addView(cb);
-        }*/
-
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddPod.this);
-
-
 
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
@@ -375,8 +328,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             public void onClick(View view) {
 
                 difficulties = selectedDiff;
-                Toast.makeText(getApplicationContext(),selectedDiff.get(0).getId(),Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),difficulties.get(0).getId(),Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
@@ -393,7 +344,8 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
 
 
     public void onClick(View view) {
-        //if the clicked button is choose
+
+        //Do actions, depending on which button calling that method was pressed
         if (view == bSelectImage) {
             showFileChooser();
         }
@@ -410,46 +362,13 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
             pod.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
             pod.setFilePath(filePath);
 
-            String diffText = "";
-            for(Difficulty diff : difficulties){
-                pod.addDifficulty(diff);
-                diffText += diff.getId();
-                Log.d(this.getClass().getName(),"HELLOOOO" + diffText);
-                Log.i(this.getClass().getName(),"HELLOOOO" + diffText);
-            }
-
             LocalData.addPO(pod);
+
             finish();
             onBackPressed();
         }
 
     }
-
-    /*
-    @Override
-    public void onClick(View view) {
-        //if the clicked button is choose
-        if (view == bSelectImage) {
-            showFileChooser();
-        }
-        else if(view== bTakeImage){
-            takePhoto();
-        }
-
-        else if(view== savePoi){
-            PO poi = new POI();
-            poi.setName(((TextView) findViewById(R.id.poiName)).getText().toString());
-            poi.setDescription(((TextView) findViewById(R.id.editText4)).getText().toString());
-            poi.setImage64(encodedImage);
-            poi.setByteArrayFromImage(imageByte);
-            poi.setLatLng(new LatLng(latitudeDataInt, longitudeDataInt));
-            poi.setPOI(true);
-            LocalData.addPO(poi);
-            finish();
-            onBackPressed();
-        }
-    }
-     */
 
     public String getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
@@ -457,59 +376,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         return strDate;
 
     }
-
-
-/* Move to LocalData
-    //this method will upload the file
-    private void uploadFile() {
-        //if there is a file to upload
-        if (filePath != null) {
-            //displaying a progress dialog while upload is going on
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
-
-            StorageReference riversRef = storageReference.child( "/images/"+ PoiName.getText() + "/"+PoiName.getText() + "_" + getCurrentDate() +".jpg");
-            riversRef.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //if the upload is successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-
-                            //and displaying a success toast
-                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //calculating progress percentage
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                            //displaying percentage in progress dialog
-                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                        }
-                    });
-        }
-        //if there is not any file
-        else {
-            //you can display an error toast
-        }
-    }
-    */
 
     public void cancelOnClick(View v) {
         LocalData.setTimerIsRunning(true);
@@ -523,10 +389,6 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         outState.putString("LONGITUDEDATA", latitudeData);
         outState.putString("LATITUDDATA",longitudeData);
     }
-
-
-
-
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -543,7 +405,4 @@ public class AddPod extends AppCompatActivity implements View.OnClickListener{
         }
 
     }
-
-
-
 }

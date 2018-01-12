@@ -47,34 +47,6 @@ public class LocalData {
     public static List<PO> getPoList() {
         if (poList == null)
             poList = new ArrayList<>();
-        if(poList.size() == 0)
-        {
-            POI poiExample = new POI();
-            poiExample.setName("Example");
-            poiExample.setDescription("This is only a Example");
-            poiExample.setLatLng(new LatLng(42, 13));
-            poList.add(poiExample);
-            POI poiExample2 = new POI();
-            poiExample2.setName("Example");
-            poiExample2.setDescription("This is only a Example");
-            poiExample2.setLatLng(new LatLng(42, 13));
-            poiExample2.setDescription("This is only a Example Number 2");
-            poList.add(poiExample2);
-            POD podExample3 = new POD();
-            podExample3.setName("Example");
-            podExample3.setDescription("This is only a Example");
-            podExample3.setLatLng(new LatLng(42, 13));
-            podExample3.setDescription("This is only a Example Number 3");
-            podExample3.setPOI(false);
-            poList.add(podExample3);
-            POI poiExample4 = new POI();
-            poiExample4.setName("Example");
-            poiExample4.setDescription("This is only a Example");
-            poiExample4.setLatLng(new LatLng(42, 13));
-            poiExample4.setDescription("This is only a Example Number 4");
-            poList.add(poiExample4);
-
-        }
 
         return poList;
     }
